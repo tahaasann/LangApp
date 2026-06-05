@@ -4,9 +4,9 @@
 >
 > **Tracer bullet:** İlk adımlarda en ince uçtan uca dilimi çalıştır (Expo “Merhaba” → SQLite’da 1 ders → manuel eşleştir → kaydet → listede gör). Sonra genişlet (AI, Supabase, test, paywall, marketplace, store).
 >
-> **Nihai hedef:** Plandaki tam ürün — Hexagonal + SOLID mobil uygulama, Free=offline SQLite, Pro=online Supabase, hiyerarşik Gemini eşleştirme, flashcard/test/paylaşım, Marketplace, RevenueCat, App Store + Play Store.
+> **Nihai hedef:** Plandaki tam ürün — Hexagonal + SOLID mobil uygulama, Free=offline SQLite, Pro=online Supabase, AI phrase-pair eşleştirme + span boyama, flashcard/test/paylaşım, Marketplace, RevenueCat, App Store + Play Store.
 >
-> **Stack (Haziran 2026):** Expo SDK 56 · React Native 0.85 · React 19.2 · TypeScript 6.0.3 · Expo Router 6 · expo-sqlite + drizzle · Supabase · Gemini 3.5 Flash · RevenueCat 10.1.x
+> **Stack (Haziran 2026):** Expo SDK 56 · React Native 0.85 · React 19.2 · TypeScript 6.0.3 · Expo Router 6 · expo-sqlite + drizzle · Supabase · **Gemini 3.1 Flash-Lite** · RevenueCat 10.1.x
 >
 > **Geliştirme ortamı:** Windows 11 laptop · **Android Studio Emulator** (birincil test yüzeyi) · iOS yalnızca EAS Build (bulut) ile — yerel Xcode yok
 >
@@ -53,19 +53,23 @@ pnpm --filter @lingualink/mobile android
 
 ---
 
-## Faz -1 — Unit ekonomisi (kod yok, karar var)
+## Faz -1 — Prompt kilidi + unit ekonomisi
 
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-001 | `docs: add unit economics framework` | `docs/UNIT_ECONOMICS.md` iskelet: Gemini token fiyat tablosu, alignment/generation ortalama token tahmini | Sınırsız AI ve Lifetime paketi sizi zarara sokmadan önce COGS modeli şart | Dosya var |
-| L-002 | `docs: benchmark ai token usage` | 3 örnek paragraf ile alignment + generation için input/output token say (Gemini console veya log) | Tahmin değil ölçümle cap ve fiyat belirlenir | Tablo dolu |
-| L-003 | `docs: compute pro ai monthly caps` | Free 1/gün, Pro aylık alignment + generation cap rakamlarını COGS’tan türet | “Sınırsız” pazarlama gerçekte cap olmalı — unit ekonomisi bunu sayıya bağlar | Cap rakamları yazılı |
-| L-004 | `docs: compute pricing scenarios` | 3 senaryo: aylık / yıllık / lifetime; store %30 komisyon sonrası break-even kullanıcı sayısı | $4.99 gibi rakamlar onaysız yazılmaz; lansman indirimi burada kararlaşır | Sen onayladın mı? |
-| L-005 | `docs: lock billing constants` | `packages/contracts/src/billing-constants.ts` — onaylı cap ve placeholder fiyat ID’leri (RevenueCat product id TBD) | Kod tarafında tek doğruluk kaynağı; magic number dağınıklığını önler | typecheck (sonraki fazda) |
+| L-001 | `docs: add unit economics framework` | `docs/UNIT_ECONOMICS.md` iskelet + Gemini 3.1 Flash-Lite fiyatları | COGS modeli prompt ve fiyattan önce çerçeve | Dosya var |
+| L-001b | `docs: lock align system prompt v1` | `docs/SYSTEM_PROMPT.md` — pairs JSON, learner_level, scope (app boyar) | Token ölçümü ve Edge Function tek kaynak | Dosya kilitli |
+| L-001c | `docs: add generate system prompt v1` | `docs/GENERATE_SYSTEM_PROMPT.md` — cümle+çeviri+pairs | Premium tek tık ders üretimi | Dosya var |
+| L-001d | `docs: add span mapping architecture` | `docs/SPAN_MAPPING.md` — MapPairsToSpans, palet, tap/TTS/drag | AI renk/konum döndürmez; uygulama sorumluluğu net | Dosya var |
+| L-001e | `docs: add language pair hints` | `docs/LANGUAGE_PAIR_HINTS.md` — 12 dil + grammar_hints injection | Global uygulama; dinamik dil çifti | Dosya var |
+| L-002 | `docs: benchmark ai token usage` | `gemini-3.1-flash-lite` + SYSTEM_PROMPT.md ile 3 örnek ölç | Tahmin değil ölçüm; cap ve fiyat buradan | Tablo dolu, COGS hesaplı |
+| L-003 | `docs: compute pro ai monthly caps` | Free 1/gün, Pro/Lifetime aylık cap — Flash-Lite COGS ile | Sınırsız AI yok; Lifetime aylık cap zorunlu | Cap rakamları yazılı |
+| L-004 | `docs: compute pricing scenarios` | 3 senaryo + break-even; store %30 | Fiyat onaysız configure edilmez | Sen onayladın mı? |
+| L-005 | `docs: lock billing constants` | `docs/BILLING_CONSTANTS.md` (L-020’de TS’ye taşınır) | Onaylı cap/fiyat placeholder tek dosya | Dosya var |
 
 
-> **Kapı:** L-004 onayı olmadan L-180+ (RevenueCat fiyat configure) adımlarına geçme.
+> **Kapı:** L-001b–e bitmeden L-002’ye geçme. L-004 onayı olmadan L-222+ (RevenueCat fiyat) yok.
 
 ---
 
@@ -92,9 +96,9 @@ pnpm --filter @lingualink/mobile android
 | --- | --- | --- | --- | --- |
 | L-020 | `feat(contracts): scaffold package` | `packages/contracts/package.json`, `tsconfig.json`, `src/index.ts` | Mobil ve Edge Function aynı Zod şemalarını paylaşır — tip uyumsuzluğu önlenir | `pnpm --filter @lingualink/contracts typecheck` |
 | L-021 | `feat(contracts): add LanguageCode enum` | 12 dil: en, tr, es, de, fr, it, pt, ja, ko, ar, zh, ru | Hedef ve ana dil aynı listeden seçilir (ürün kuralı) | typecheck |
-| L-022 | `feat(contracts): add AlignmentSegment schema` | `id`, `depth`, `order`, `source`, `target`, `colorIndex`, `children[]` recursive Zod | Hiyerarşik AI çıktısı ve UI renkleri tek şemada | typecheck |
-| L-023 | `feat(contracts): add AlignmentTree schema` | `segments: AlignmentSegment[]` root wrapper | Edge function → mobil parse güvenli | typecheck |
-| L-024 | `feat(contracts): add Lesson and PhrasePair schemas` | `Lesson`, kayıtlı segment flat view için `PhrasePair` | SQLite ve Supabase aynı domain modeli | typecheck |
+| L-022 | `feat(contracts): add AlignmentPair schema` | `order`, `source`, `target` — AI çıktısı; renk yok | Flat pair list; AlignmentTree kaldırıldı | typecheck |
+| L-023 | `feat(contracts): add AlignmentPairList schema` | `pairs: AlignmentPair[]` + `HIGHLIGHT_PALETTE` sabiti | Edge → mobil parse; renk uygulama atar | typecheck |
+| L-024 | `feat(contracts): add Lesson and MappedPair schemas` | `Lesson`, `TextSpan`, `MappedPair` (start/end/color) | SQLite + span mapping sonucu | typecheck |
 | L-025 | `feat(contracts): add TestQuestion schema` | `type: word \| sentence \| paragraph`, `prompt`, `choices`, `correctIndex` | Test modları contract-first tanımlanır | typecheck |
 | L-026 | `feat(contracts): add EntitlementTier schema` | `free \| pro \| lifetime` | Free/Pro storage ve feature gate tek tip | typecheck |
 | L-027 | `feat(contracts): export public API` | `src/index.ts` re-export | Diğer paketler tek import path | import edilebilir |
@@ -158,7 +162,7 @@ pnpm --filter @lingualink/mobile android
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
 | L-060 | `feat(mobile): install expo-sqlite and drizzle` | `npx expo install expo-sqlite`, drizzle-orm | Free kullanıcı dersleri yalnızca cihazda — offline-first ürün kuralı | install OK |
-| L-061 | `feat(lessons): add sqlite schema` | `lessons`, `alignment_segments` tabloları — `parent_id`, `depth` | Hiyerarşik segment ağacı yerel DB’de saklanır | migration çalışır |
+| L-061 | `feat(lessons): add sqlite schema` | `lessons`, `alignment_pairs` — order, phrases, span index, color | Düz pair listesi + map sonucu index’ler | migration çalışır |
 | L-062 | `feat(lessons): add SqliteLessonReader adapter` | `ILessonReader` impl | Free tier’ın birincil depolama adaptörü | read test PASS |
 | L-063 | `feat(lessons): add SqliteLessonWriter adapter` | `ILessonWriter` impl | Kayıt offline; sunucu maliyeti sıfır | write + read roundtrip |
 | L-064 | `feat(lessons): wire SaveLessonUseCase to sqlite` | composition root / DI module | Tracer: emülatörde kalıcı kayıt (dev build gerekir) | ders DB’de |
@@ -204,7 +208,7 @@ pnpm --filter @lingualink/mobile android
 | --- | --- | --- | --- | --- |
 | L-090 | `feat(lessons): add ListLessonsUseCase` | tüm dersleri listele | Lessons ekranı use case üzerinden | test PASS |
 | L-091 | `feat(lessons): add LessonsScreen` | `app/(tabs)/lessons.tsx` — kart listesi, tarih | Kayıtlı derslere tekrar erişim | kayıtlı ders görünür |
-| L-092 | `feat(lessons): add LoadLessonUseCase` | tek ders + segment ağacı | Düzenleme ve test için yükleme | edit açılır |
+| L-092 | `feat(lessons): add LoadLessonUseCase` | tek ders + alignment_pairs | Düzenleme ve test için yükleme | edit açılır |
 | L-093 | `feat(lessons): add DeleteLessonUseCase` | soft veya hard delete | Kullanıcı ders yönetimi | silince listeden düşer |
 | L-094 | `feat(lessons): add bottom tabs navigator` | create + lessons tab | Ana navigasyon iskeleti | tab geçişi |
 
@@ -254,38 +258,42 @@ pnpm --filter @lingualink/mobile android
 
 ---
 
-## Faz 12 — AI alignment: stub tracer (echo)
+## Faz 12 — AI alignment: stub + span boyama
 
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-130 | `feat(alignment): define IAlignmentService port` | `align(source, target, langs): AlignmentTree` | AI sağlayıcı değişse use case değişmez | typecheck |
-| L-131 | `feat(supabase): add align-text edge function skeleton` | `supabase/functions/align-text/index.ts` — CORS + auth | API key sunucuda kalır; mobilde Gemini yok | `supabase functions serve` |
-| L-132 | `feat(alignment): add StubAlignmentAdapter` | sabit `AlignmentTree` JSON döndür | Gemini’den önce uçtan uca UI pipeline doğrulanır | mobilde renkli ağaç |
-| L-133 | `feat(alignment): add AlignTextUseCase` | port çağır, tree döndür | Application katmanı HTTP bilmez | unit test |
-| L-134 | `feat(alignment): add AI Eşleştir button on create screen` | loading + error state | “Sihir anı” UX iskeleti | stub ağaç render |
-| L-135 | `feat(alignment): render hierarchical segments` | depth 0/1 farklı renk, nested UI | Madde 5: alt kelime grupları görünür | görsel 1 benzeri |
+| L-130 | `feat(alignment): define IAlignmentService port` | `align(...): AlignmentPairList` | AI sağlayıcı değişse use case değişmez | typecheck |
+| L-131 | `feat(alignment): add MapPairsToSpansUseCase` | pairs → MappedPair[] + palet + coverage validate | Boyama AI’da değil uygulamada (`SPAN_MAPPING.md`) | unit test PASS |
+| L-132 | `feat(alignment): add HighlightText component` | üst hedef / alt ana dil kutusu, renkli span | Kullanıcı eşleşmeyi görür | Android emülatör |
+| L-133 | `feat(alignment): add tap sync between boxes` | tık → karşı span highlight | Öğrenme: ilişkiyi görmek | iki kutu sync |
+| L-134 | `feat(alignment): add SpeakPairUseCase` | tık → expo-speech hedef dil | Otomatik telaffuz | ses duyulur |
+| L-135 | `feat(supabase): add align-text edge function skeleton` | CORS + auth + stub pairs JSON | API key sunucuda | functions serve |
+| L-136 | `feat(alignment): add StubAlignmentAdapter` | sabit pairs[] örnek (young boy cümlesi) | Gemini öncesi uçtan uca pipeline | renkli boyama |
+| L-137 | `feat(alignment): add AlignTextUseCase` | port + MapPairsToSpans zinciri | Application orchestration | unit test |
+| L-138 | `feat(alignment): add AI Eşleştir button` | loading + error | Sihir anı UX | stub çalışır |
+| L-139 | `feat(alignment): add RealignPairUseCase mvp` | basılı tut + sürükle → pair düzelt | Yanlış AI eşleşmesi düzeltmesi | drag çalışır |
 
 
-> **Tracer bullet #2:** Stub AI → hiyerarşik renkli eşleşme UI.
+> **Tracer bullet #2:** Stub pairs → MapPairsToSpans → renkli UI + tap/TTS.
 
 ---
 
-## Faz 13 — Prompt factory + gerçek Gemini
+## Faz 13 — Prompt factory + gerçek Gemini 3.1 Flash-Lite
 
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-140 | `feat(prompts): add prompt template package` | `packages/prompts/` — `buildAlignmentPrompt(langPair, texts)` | Dil çiftine göre dinamik prompt (Madde 10) | unit test |
-| L-141 | `feat(prompts): add tr-en alignment template` | SOV, possessive notları | TR↔EN en sık çift; kalite buradan başlar | prompt string snapshot |
-| L-142 | `feat(prompts): add templates for 11 more pairs` | en-de, en-es, … minimum generic fallback | 12 dil × dinamik üretim veya şablon | 12 kod çalışır |
-| L-143 | `feat(alignment): add GeminiAlignmentAdapter in edge` | `@google/generative-ai` Gemini 3.5 Flash, JSON mode | Gerçek sihir anı; structured output | function invoke OK |
-| L-144 | `feat(alignment): validate response with AlignmentTree Zod` | invalid JSON → 422 | AI halüsinasyonu uygulamaya sızmaz | invalid reject |
-| L-145 | `feat(alignment): wire mobile to real edge function` | Stub adapter kaldır | Tracer bullet #3: gerçek AI eşleştirme | Android emülatörde <3sn hedef |
-| L-146 | `feat(alignment): add manual override after AI` | AI sonrası düzenleme | AI hata düzeltme ürün gereksinimi | edit + re-save |
+| L-140 | `feat(prompts): add prompt template package` | `packages/prompts/` — `buildAlignmentPrompt()` SYSTEM_PROMPT.md + injection | Dil çifti + learner_level dinamik | unit test |
+| L-141 | `feat(prompts): add buildGrammarHints` | `LANGUAGE_PAIR_HINTS.md` → kod | 12 dil çifti desteği | en-tr test |
+| L-142 | `feat(prompts): wire GENERATE_SYSTEM_PROMPT` | `buildGeneratePrompt()` | Premium ders üretimi | prompt string |
+| L-143 | `feat(alignment): add GeminiFlashLiteAdapter` | `gemini-3.1-flash-lite`, JSON mode | Kilitli model + düşük COGS | invoke OK |
+| L-144 | `feat(alignment): validate AlignmentPairList Zod` | coverage + substring check | AI hatası uygulamaya sızmaz | invalid → 422 |
+| L-145 | `feat(alignment): wire mobile to real edge function` | stub kaldır | Tracer bullet #3 | Android <3sn hedef |
+| L-146 | `feat(alignment): add manual override after AI` | sürükle + manuel eşleştir | AI düzeltme | edit + re-save |
 
 
-> **Tracer bullet #3:** Gerçek Gemini hiyerarşik alignment.
+> **Tracer bullet #3:** Gerçek Gemini 3.1 Flash-Lite alignment.
 
 ---
 
@@ -307,8 +315,8 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-160 | `feat(flashcards): add domain FlashcardCard entity` | front/back, depth, lessonId | Flashcard domain ayrı context | unit test |
-| L-161 | `feat(flashcards): add BuildDeckUseCase` | segment ağacından kart destesi | Kullanıcı kayıtlı dersten çalışır (Madde 7) | test PASS |
+| L-160 | `feat(flashcards): add domain FlashcardCard entity` | front/back, pairOrder, lessonId | Flashcard domain ayrı context | unit test |
+| L-161 | `feat(flashcards): add BuildDeckUseCase` | alignment_pairs’ten kart destesi | Kullanıcı kayıtlı dersten çalışır (Madde 7) | test PASS |
 | L-162 | `feat(flashcards): add FlashcardsScreen tab` | `app/(tabs)/flashcards.tsx` — ayrı menü | Lessons’tan bağımsız tekrar modu | tab görünür |
 | L-163 | `feat(flashcards): add card flip UI` | ön/hedef, arka/ana dil | Klasik flashcard deneyimi | flip çalışır |
 | L-164 | `feat(flashcards): add know dont know actions` | shuffle, basit ilerleme | MVP SRS yok; random shuffle yeterli | deste ilerler |
@@ -324,8 +332,8 @@ pnpm --filter @lingualink/mobile android
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
 | L-170 | `feat(tests): add GenerateQuestionsUseCase` | segmentlerden MCQ üret | Test iş kuralı UI’dan izole | unit test |
-| L-171 | `feat(tests): add word level question generator` | depth>=1 segment | Madde 6: kelime/kelime grubu soruları | soru üretilir |
-| L-172 | `feat(tests): add sentence level generator` | depth 0 / tam cümle | Cümle tipi sorular | soru üretilir |
+| L-171 | `feat(tests): add word level question generator` | kısa pair (≤3 kelime) | Kelime/kelime grubu soruları | soru üretilir |
+| L-172 | `feat(tests): add sentence level generator` | tam source_text / uzun pair | Cümle tipi sorular | soru üretilir |
 | L-173 | `feat(tests): add paragraph level generator` | birleşik metin bloğu | Paragraf tipi sorular | soru üretilir |
 | L-174 | `feat(tests): add distractor picker` | aynı derslerden 3 yanlış şık | MCQ kalitesi | 4 şık unique |
 | L-175 | `feat(tests): add TestScreen random mode` | `app/(tabs)/test.tsx` | Free yalnızca random (Madde 6) | random başlar |
@@ -370,7 +378,7 @@ pnpm --filter @lingualink/mobile android
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
 | L-200 | `feat(prompts): add buildLessonGenerationPrompt` | topic + langs + difficulty | Kullanıcı kendi cümlesini bulmak zorunda değil (Madde 11) | prompt test |
-| L-201 | `feat(supabase): add generate-lesson edge function` | cümle + çeviri + AlignmentTree tek tur | Premium tek tık değer önerisi | invoke OK |
+| L-201 | `feat(supabase): add generate-lesson edge function` | source_text + target_text + pairs tek tur | Premium tek tık (`GENERATE_SYSTEM_PROMPT.md`) | invoke OK |
 | L-202 | `feat(lessons): add GenerateLessonUseCase` | Pro gate + quota | Free bu özelliği kullanamaz | free blocked |
 | L-203 | `feat(lessons): add topic input and generate button UI` | create ekranında Pro bölümü | UX: konu gir → ders hazır | pro’da ders oluşur |
 
@@ -493,8 +501,8 @@ pnpm --filter @lingualink/mobile android
 | **M6** Ders listesi | L-094 | Tabs: create + lessons |
 | **M7** Auth + cloud şema | L-113 | Supabase + giriş |
 | **M8** Pro storage | L-125 | Tier’a göre sqlite/cloud |
-| **M9** Stub AI UI | L-135 | Hiyerarşik renk render |
-| **M10** Gerçek Gemini | L-146 | Canlı AI alignment |
+| **M9** Stub AI UI | L-139 | pairs → span boyama + tap/TTS |
+| **M10** Gerçek Gemini | L-146 | Gemini 3.1 Flash-Lite canlı |
 | **M11** Flashcards | L-166 | Ayrı tab + TTS Pro |
 | **M12** Test Free | L-177 | Random quiz 3 soru tipi |
 | **M13** Test Pro | L-183 | Ders seçerek test |
@@ -576,13 +584,14 @@ Bu mesajda L-001 → L-004. Bitirince commit/push; sonra "L-005'e geçelim" yaz.
 
 ### Önerilen başlangıç sırası
 
-1. `L-001`…`L-005` — unit ekonomisi (kod yok)
-2. `L-010`…`L-016` — repo iskeleti → GitHub private remote
-3. `L-028`…`L-035` — Windows Android ortamı + ilk emülatör build
-4. Sonraki fazlar tablo sırasıyla
+1. `L-001`…`L-001e` — ekonomi iskelet + prompt kilidi
+2. `L-002`…`L-005` — token ölçüm + cap + fiyat
+3. `L-010`…`L-016` — repo iskeleti → GitHub private remote
+4. `L-028`…`L-035` — Windows Android ortamı + ilk emülatör build
+5. Sonraki fazlar tablo sırasıyla
 
 **GitHub:** `L-010` sonrası `git remote add origin` + ilk push.
 
 ---
 
-*Son güncelleme: 2026-06-05 — Windows 11 + Android Emulator · Batch protokol v2 · Expo SDK 56 · Hexagonal · Marketplace dahil.*
+*Son güncelleme: 2026-06-05 — Gemini 3.1 Flash-Lite · flat pairs + span mapping · Windows Android Emulator · Batch protokol v2*
