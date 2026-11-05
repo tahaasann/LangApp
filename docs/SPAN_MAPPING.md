@@ -87,7 +87,8 @@ type MappedPair = {
 
 1. Her pair için `pair.target`'ın `targetText` içindeki, kullanılmamış aralıklarla çakışmayan ilk konumunu seç. Tekrarlı ifadeler ("bugün ... bugün") bu sayede ayrı konumlara yerleşir.
 2. Çakışmasız konum yoksa → `SpanMappingError`.
-3. Tam kaplama: tüm `sourceText` ve `targetText` karakterleri bir span'a bağlı mı? (`validateFullCoverage`)
+3. Tam kaplama: `sourceText` ve `targetText` karakterleri bir span'a bağlı mı? Yalnızca boşluktan oluşan aralıklar span dışında kalabilir ve renksiz çizilir (`ALIGN_VALIDATION.md`).
+4. `pairs` kaynak sırasında gelmezse `SOURCE_COVERAGE` hatası verir; model yanıtı sıralanmaz, yeniden denenir.
 
 ### Domain port
 

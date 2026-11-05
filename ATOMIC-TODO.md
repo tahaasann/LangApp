@@ -63,7 +63,7 @@ pnpm --filter @lingualink/mobile android
 | L-001c | `docs: add generate system prompt v1` | `docs/GENERATE_SYSTEM_PROMPT.md` v3 — yalnızca metin + çeviri (pairs yok) | Premium ders üretimi; eşleştirme ayrı `align-text` çağrısı | Dosya var |
 | L-001d | `docs: add span mapping architecture` | `docs/SPAN_MAPPING.md` — MapPairsToSpans, palet, tap/TTS/drag | AI renk/konum döndürmez; uygulama sorumluluğu net | Dosya var |
 | L-001e | `docs: add language pair hints` | `docs/LANGUAGE_PAIR_HINTS.md` — 12 dil + grammar_hints injection | Global uygulama; dinamik dil çifti | Dosya var |
-| L-002 | `docs: benchmark ai token usage` | `claude-haiku-5-5` ile generate ve align ayrı ölç; aynı metinleri `gpt-6-luna` ile karşılaştır (`UNIT_ECONOMICS.md` §4.1) | Tahmin değil ölçüm; model kararı, cap ve fiyat buradan | Tablo dolu, COGS + doğrulama oranı yazılı |
+| L-002 | `docs: benchmark ai token usage` | `claude-haiku-5-5` ile generate ve align ayrı ölç (`UNIT_ECONOMICS.md` §4.1) | Tahmin değil ölçüm; cap ve fiyat buradan | Tablo dolu, COGS + doğrulama oranı yazılı |
 | L-003 | `docs: compute pro ai monthly caps` | Free 1/gün, Pro/Lifetime aylık cap — Haiku 5.5 COGS ile (thinking token'ları dahil) | Sınırsız AI yok; Lifetime aylık cap zorunlu | Cap rakamları yazılı |
 | L-004 | `docs: compute pricing scenarios` | 3 senaryo + break-even; store %30 | Fiyat onaysız configure edilmez | Sen onayladın mı? |
 | L-005 | `docs: lock billing constants` | `docs/BILLING_CONSTANTS.md` (L-020’de TS’ye taşınır) | Onaylı cap/fiyat placeholder tek dosya | Dosya var |
