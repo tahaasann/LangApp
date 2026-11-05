@@ -1,6 +1,6 @@
 # LinguaLink Lite — Unit Ekonomisi
 
-> **Durum:** Prompt v3 (L-001b–e). L-002 Haiku 5.5 için ölçüldü (§4); gecikme hedefi kararı açık. L-003–L-005 henüz tamamlanmadı.
+> **Durum:** Prompt v3 (L-001b–e). L-002 Haiku 5.5 için ölçüldü (§4). L-003–L-005 henüz tamamlanmadı.
 > **Son güncelleme:** 2026-11-05
 > **AI model (COGS baz):** `claude-haiku-5-5` — **$0.10/M input**, **$0.50/M output**
 
@@ -81,7 +81,7 @@ COGS_usd = (input_tokens / 1_000_000) × 0.10 + (output_tokens / 1_000_000) × 0
 
 - **Kalite:** Çağrı bazında 100 çağrının 97'si doğrulamadan geçti. Elle yalnızca örnek çıktılar incelendi; bunlarda cümle kayması görülmedi, ama tüm çıktıların anlamı kontrol edilmedi.
 - **Thinking kapalı:** Maliyet ~%70 düşer ve çağrı P95 2.6 sn olur, ama 100 çağrının yalnızca 24'ü geçer (noktalama sayılmasa 74). Boş `pairs` ve metinde olmayan hedefler de görüldü. Kullanılmaz.
-- **Gecikme:** Thinking açıkken çağrı P95 ~12 sn. L-147 ve L-153'teki `<3 sn` hedefi bu ayarla tutmaz (**açık karar**).
+- **Gecikme:** Thinking açıkken çağrı P95 ~12 sn; önceki `<3 sn` hedefi bu ayarla tutmadığı için hedef **çağrı P95 ≤12 sn** oldu ve ekranda ilerleme gösterilir. Sonuç ders başına bir kez üretilip kaydedildiğinden bekleme çalışma sırasında tekrarlanmaz. Ölçüm yalnızca model çağrısını kapsar: mobil ve Edge Function ağı, yeniden denemeler ve parçalı isteklerin toplam süresi buna dahil değildir. ~130 kelimelik tek istek 19 sn'ye çıkabilir. Gerçek süre L-153 ile izlenir.
 - **Cümle parçalama:** Maliyeti 3–4 katına çıkarır. Bu örneklemde tek istek de neredeyse aynı oranda geçti; öneri, önce tek istek gönderip yalnızca doğrulama başarısız olursa parçalamaktır. 5 tur bu kararı kesinleştirmek için azdır.
 - **Toplam ölçüm maliyeti:** ~$0.17.
 
@@ -151,3 +151,4 @@ break_even_paying_users = monthly_fixed_costs / gross_margin_usd
 | 2026-11-05 | AI model: `claude-haiku-5-5` $0.10/$0.50 (`gemini-3.1-flash-lite` yerine); GPT-6 Luna ile karşılaştırılmadı | Kullanıcı |
 | 2026-11-05 | Thinking açık, `effort: "low"`; boşluk toleranslı doğrulama | L-002 ölçümü |
 | 2026-11-05 | Prompt v3: sabit sistem promptu, bağlam kullanıcı mesajında | Mimari güncelleme |
+| 2026-11-05 | Eşleştirme gecikme hedefi: çağrı P95 ≤12 sn + ilerleme göstergesi (`<3 sn` yerine) | Kullanıcı |

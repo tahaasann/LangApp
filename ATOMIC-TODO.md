@@ -271,7 +271,7 @@ pnpm --filter @lingualink/mobile android
 | L-135 | `feat(supabase): add align-text edge function skeleton` | CORS + auth + stub pairs JSON | API key sunucuda | functions serve |
 | L-136 | `feat(alignment): add StubAlignmentAdapter` | sabit pairs[] örnek (young boy cümlesi) | Gerçek AI öncesi uçtan uca pipeline | renkli boyama |
 | L-137 | `feat(alignment): add AlignTextUseCase` | port + MapPairsToSpans zinciri | Application orchestration | unit test |
-| L-138 | `feat(alignment): add AI Eşleştir button` | loading + error | Sihir anı UX | stub çalışır |
+| L-138 | `feat(alignment): add AI Eşleştir button` | error + ~12 sn beklemeye uygun ilerleme göstergesi | Sihir anı UX; eşleştirme anlık değil | stub çalışır |
 | L-139 | `feat(alignment): add RealignPairUseCase mvp` | basılı tut + sürükle → pair düzelt | Yanlış AI eşleşmesi düzeltmesi | drag çalışır |
 
 
@@ -291,7 +291,7 @@ pnpm --filter @lingualink/mobile android
 | L-144 | `feat(alignment): add AlignmentValidator` | `ALIGN_VALIDATION.md` kuralları ve test matrisi | Şema kaplamayı garanti etmez; AI hatası uygulamaya sızmaz | invalid → 422 |
 | L-145 | `feat(alignment): add sentence chunked alignment` | `splitIntoSentences` + cümle başına align + `order` birleştirme | Uzun metinde cümle kaymasını önler | 200 kelime testi geçer |
 | L-146 | `feat(alignment): handle refusal and retry` | `stop_reason` kontrolü, 1 yeniden deneme, manuel moda düşüş | Haiku 5.5'te sunucu tarafı fallback yok | refusal → manuel mod |
-| L-147 | `feat(alignment): wire mobile to real edge function` | stub kaldır | Tracer bullet #3 | Android <3sn hedef |
+| L-147 | `feat(alignment): wire mobile to real edge function` | stub kaldır | Tracer bullet #3 | Android: ilerleme göstergesi görünür, yanıt ~12 sn içinde gelir |
 | L-148 | `feat(alignment): add manual override after AI` | sürükle + manuel eşleştir | AI düzeltme | edit + re-save |
 
 
@@ -307,7 +307,7 @@ pnpm --filter @lingualink/mobile android
 | L-150 | `feat(usage): add CheckAiQuotaUseCase` | edge başında günlük/aylık sayaç | Sınırsız AI zararını sunucu durdurur | free 2. istek 429 |
 | L-151 | `feat(usage): increment ai_usage in edge` | başarılı alignment sonrası +1 | COGS telemetry ve limit için kayıt | DB sayacı artar |
 | L-152 | `feat(alignment): show paywall prompt on 429` | mobilde limit mesajı | Free → Pro dönüşüm fırsatı | mesaj görünür |
-| L-153 | `feat(obs): log alignment duration and token estimate` | PostHog event iskeleti | P95 <3sn ve unit ekonomisi gerçek veri | event dashboard |
+| L-153 | `feat(obs): log alignment duration and token estimate` | PostHog event iskeleti | Çağrı P95 ≤12 sn hedefi ve unit ekonomisi gerçek veri | event dashboard |
 
 
 ---

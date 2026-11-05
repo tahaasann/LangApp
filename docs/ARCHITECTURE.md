@@ -65,6 +65,7 @@ kullanıcının yapıştırdığı metin ──┤
 - **Model:** `claude-haiku-5-5`. Model kimliği tek bir sabitte tutulur; çağrılar `IAlignmentService` portunun arkasındadır, sağlayıcı değişimi use case'lere dokunmaz.
 - **Neden Haiku 5.5:** Kullanıcı kararı. L-002 ölçümü (`UNIT_ECONOMICS.md` §4) yeterli kaliteyi gösterdi; `gpt-6-luna` ile karşılaştırma yapılmadı.
 - **Çağrı ayarları:** `output_config.effort: "low"`, structured output, thinking açık, `temperature` yok. Thinking maliyetin ve gecikmenin çoğunu oluşturur ama kapatıldığında çıktı kalitesi kabul edilemez düzeye iniyor. Yanıt blokları `type` alanına göre okunur.
+- **Gecikme:** Hedef çağrı P95 ≤12 sn. Eşleştirme anlık değildir; uygulama ilerleme gösterir ve sonucu derse kaydeder (`UNIT_ECONOMICS.md` §4).
 - **Sistem promptu sabittir:** Dil, seviye ve metin yalnızca kullanıcı mesajında gider. Böylece önbellek gerekirse kod değişmeden açılır ve kullanıcı metni talimat olarak yorumlanmaz.
 - **Doğrulama:** Kurallar `ALIGN_VALIDATION.md`, konum ve renk `SPAN_MAPPING.md` içindedir. AI renk veya konum döndürmez.
 
