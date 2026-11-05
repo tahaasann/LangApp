@@ -35,7 +35,7 @@ function skipWhitespace(text: string, position: number): number {
 function coversSource(text: string, phrases: readonly string[], lenient: boolean): boolean {
   let cursor = 0;
   for (const phrase of phrases) {
-    if (lenient) cursor = skipWhitespace(text, cursor);
+    if (lenient && !text.startsWith(phrase, cursor)) cursor = skipWhitespace(text, cursor);
     if (!text.startsWith(phrase, cursor)) return false;
     cursor += phrase.length;
   }
@@ -53,17 +53,20 @@ function coversTarget(text: string, phrases: readonly string[], lenient: boolean
   const failed = new Set<string>();
 
   const place = (start: number, left: number): boolean => {
-    const position = lenient ? skipWhitespace(text, start) : start;
-    if (left === 0) return position === text.length;
-    const state = `${position}|${distinct.map((phrase) => remaining.get(phrase)).join(",")}`;
+    const afterGap = lenient ? skipWhitespace(text, start) : start;
+    if (left === 0) return afterGap === text.length;
+    const state = `${start}|${distinct.map((phrase) => remaining.get(phrase)).join(",")}`;
     if (failed.has(state)) return false;
-    for (const phrase of distinct) {
-      const count = remaining.get(phrase) ?? 0;
-      if (count === 0 || !text.startsWith(phrase, position)) continue;
-      remaining.set(phrase, count - 1);
-      const placed = place(position + phrase.length, left - 1);
-      remaining.set(phrase, count);
-      if (placed) return true;
+    // Boşluk parçanın kendisine ait olabilir; önce birebir konum denenir.
+    for (const position of afterGap === start ? [start] : [start, afterGap]) {
+      for (const phrase of distinct) {
+        const count = remaining.get(phrase) ?? 0;
+        if (count === 0 || !text.startsWith(phrase, position)) continue;
+        remaining.set(phrase, count - 1);
+        const placed = place(position + phrase.length, left - 1);
+        remaining.set(phrase, count);
+        if (placed) return true;
+      }
     }
     failed.add(state);
     return false;

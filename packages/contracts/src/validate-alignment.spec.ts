@@ -116,6 +116,19 @@ describe("validateAlignment", () => {
     expect(codes(input, true)).toEqual([]);
   });
 
+  it("birebir kaplamayı esnek modda da kabul eder", () => {
+    expect(codes({ sourceText, targetText, pairs }, true)).toEqual([]);
+    const input = {
+      sourceText: "I saw him",
+      targetText: "onu gördüm",
+      pairs: [
+        { order: 0, source: "I saw", target: " gördüm" },
+        { order: 1, source: " him", target: "onu" },
+      ],
+    };
+    expect(codes(input, true)).toEqual([]);
+  });
+
   it("esnek mod eksik kelimeye izin vermez", () => {
     const input = {
       sourceText,
