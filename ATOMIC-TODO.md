@@ -10,7 +10,61 @@
 >
 > **Geliştirme ortamı:** Windows 11 laptop · **Android Studio Emulator** (birincil test yüzeyi) · iOS yalnızca EAS Build (bulut) ile — yerel Xcode yok
 >
-> **Sütunlar:** `Durum` yok — ilerlemeyi commit geçmişinden takip edersin.
+> **Durum:** Satır başındaki işaretler ilerlemeyi gösterir; işaretsiz adımlar yapılmadı. Ayrıntı: "İlerleme" bölümü.
+
+---
+
+## İlerleme (son güncelleme: 2026-11-05)
+
+- ✅ Adımın `Doğrula` ölçütü karşılandı.
+- 🟡 Çalışan bir karşılığı var, ama plandaki hâlinden eksik veya farklı.
+
+Android prototipi (`apps/mobile`, `packages/ai`) plan sırası dışında, tek seferde yapıldı. Bu yüzden "tek adım = tek commit" kuralına uymuyor ve kod adları plandakilerden farklı olabilir. Prototipte Free/Pro kapıları, kota ve Supabase yoktur.
+
+**Planda olmayan ekler:** ders grupları, AI ile çeviri (`translate-text`), yerel AI sunucusu, bağlantı yapıştırarak ders alma.
+
+**Onay bekleyen:** L-004 fiyat senaryoları taslağı henüz commit edilmedi; L-005 bu onaydan sonra yapılır.
+
+| Adım | Kalan veya farklı olan |
+| --- | --- |
+| L-003 | Limitler taslak; fiyat onayıyla L-005'te kilitlenecek |
+| L-028 | Kurulum README'de; `docs/DEV_SETUP_WINDOWS.md` yazılmadı |
+| L-034 | README'de Android komutları var; iOS notu eksik |
+| L-041 | Entity sınıfı yok; kurallar `LessonSchema` ve `createLesson` içinde |
+| L-042 | Entity sınıfı yok; kurallar `LessonSchema` ve `createLesson` içinde |
+| L-043 | Ayrı value object yok; `LanguageCodeSchema` kullanılıyor |
+| L-044 | Okuma ve yazma tek `ILessonRepository` portunda |
+| L-045 | Okuma ve yazma tek `ILessonRepository` portunda |
+| L-046 | `create-lesson.spec.ts` var; red aşaması görülmeden yazıldı |
+| L-047 | `createLesson` fonksiyonu olarak yapıldı |
+| L-050 | `shared/languages.ts` var; RTL bilgisi ve registry yok |
+| L-052 | Genel `ChipRow` kullanılıyor; `LanguagePicker` yok |
+| L-060 | expo-sqlite kurulu; drizzle kullanılmadı |
+| L-081 | Seçim durumu `PairWorkspace` içinde; ayrı hook yok |
+| L-083 | Eşleştir düğmesi var; ayrı çift listesi yok |
+| L-090 | Ekran doğrudan repository çağırıyor; use case yok |
+| L-092 | Ekran doğrudan repository çağırıyor; use case yok |
+| L-093 | Ekran doğrudan repository çağırıyor; use case yok |
+| L-134 | `speak` çağrılıyor ve ses motoruna ulaşıyor; ses kulakla doğrulanmadı, use case yok |
+| L-137 | Zincir ekranda kurulu; ayrı use case yok |
+| L-139 | Sürükleme yok; çift silip elle yeniden eşleştirme var |
+| L-140 | `packages/prompts` yerine `packages/ai` içinde |
+| L-142 | `packages/ai` içinde |
+| L-143 | `messages.create` + JSON şeması ile; `messages.parse` kullanılmadı |
+| L-145 | Yalnızca yedek akış olarak var; 200 kelime testi yapılmadı |
+| L-147 | Mobil gerçek modele bağlı, ama Edge Function yerine yerel sunucudan |
+| L-148 | Sürükleme yok; silme ve elle eşleştirme var |
+| L-172 | Uzun çiftlerden üretiliyor; tam `source_text` kullanılmıyor |
+| L-173 | Uzun çiftlerden üretiliyor; birleşik metin bloğu yok |
+| L-181 | Çoklu ders seçimi var; Pro kapısı yok |
+| L-182 | Türler uzunluğa göre karışıyor; ayrı oturum modu yok |
+| L-193 | Bağlantıdan alma çalışıyor; deck ve slug modeli yok |
+| L-194 | Paylaşım ders ekranında; `shared_decks` kaydı yok |
+| L-195 | `/import` rotası çalan uygulamada denendi; `deck/[shareId]` ve soğuk açılış yok |
+| L-200 | Üretim mesajı `packages/ai` içinde |
+| L-201 | Yerel sunucuda; Edge Function yok |
+| L-202 | Üretim çalışıyor; Pro kapısı ve kota yok |
+| L-203 | Konu girişi Oluştur ekranında; Pro kapısı yok |
 
 ---
 
@@ -58,13 +112,13 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-001 | `docs: add unit economics framework` | `docs/UNIT_ECONOMICS.md` iskelet + Claude Haiku 5.5 fiyatları | COGS modeli prompt ve fiyattan önce çerçeve | Dosya var |
-| L-001b | `docs: lock align system prompt v1` | `docs/SYSTEM_PROMPT.md` v3 — sabit sistem promptu, pairs JSON, scope (app boyar) | Token ölçümü ve Edge Function tek kaynak | Dosya kilitli |
-| L-001c | `docs: add generate system prompt v1` | `docs/GENERATE_SYSTEM_PROMPT.md` v3 — yalnızca metin + çeviri (pairs yok) | Premium ders üretimi; eşleştirme ayrı `align-text` çağrısı | Dosya var |
-| L-001d | `docs: add span mapping architecture` | `docs/SPAN_MAPPING.md` — MapPairsToSpans, palet, tap/TTS/drag | AI renk/konum döndürmez; uygulama sorumluluğu net | Dosya var |
-| L-001e | `docs: add language pair hints` | `docs/LANGUAGE_PAIR_HINTS.md` — 12 dil + grammar_hints injection | Global uygulama; dinamik dil çifti | Dosya var |
-| L-002 | `docs: benchmark ai token usage` | `claude-haiku-5-5` ile generate ve align ayrı ölç (`UNIT_ECONOMICS.md` §4.1) | Tahmin değil ölçüm; cap ve fiyat buradan | Tablo dolu, COGS + doğrulama oranı yazılı |
-| L-003 | `docs: compute pro ai monthly caps` | Free 1/gün, Pro/Lifetime aylık cap — Haiku 5.5 COGS ile (thinking token'ları dahil) | Sınırsız AI yok; Lifetime aylık cap zorunlu | Cap rakamları yazılı |
+| ✅ L-001 | `docs: add unit economics framework` | `docs/UNIT_ECONOMICS.md` iskelet + Claude Haiku 5.5 fiyatları | COGS modeli prompt ve fiyattan önce çerçeve | Dosya var |
+| ✅ L-001b | `docs: lock align system prompt v1` | `docs/SYSTEM_PROMPT.md` v3 — sabit sistem promptu, pairs JSON, scope (app boyar) | Token ölçümü ve Edge Function tek kaynak | Dosya kilitli |
+| ✅ L-001c | `docs: add generate system prompt v1` | `docs/GENERATE_SYSTEM_PROMPT.md` v3 — yalnızca metin + çeviri (pairs yok) | Premium ders üretimi; eşleştirme ayrı `align-text` çağrısı | Dosya var |
+| ✅ L-001d | `docs: add span mapping architecture` | `docs/SPAN_MAPPING.md` — MapPairsToSpans, palet, tap/TTS/drag | AI renk/konum döndürmez; uygulama sorumluluğu net | Dosya var |
+| ✅ L-001e | `docs: add language pair hints` | `docs/LANGUAGE_PAIR_HINTS.md` — 12 dil + grammar_hints injection | Global uygulama; dinamik dil çifti | Dosya var |
+| ✅ L-002 | `docs: benchmark ai token usage` | `claude-haiku-5-5` ile generate ve align ayrı ölç (`UNIT_ECONOMICS.md` §4.1) | Tahmin değil ölçüm; cap ve fiyat buradan | Tablo dolu, COGS + doğrulama oranı yazılı |
+| 🟡 L-003 | `docs: compute pro ai monthly caps` | Free 1/gün, Pro/Lifetime aylık cap — Haiku 5.5 COGS ile (thinking token'ları dahil) | Sınırsız AI yok; Lifetime aylık cap zorunlu | Cap rakamları yazılı |
 | L-004 | `docs: compute pricing scenarios` | 3 senaryo + break-even; store %30 | Fiyat onaysız configure edilmez | Sen onayladın mı? |
 | L-005 | `docs: lock billing constants` | `docs/BILLING_CONSTANTS.md` (L-020’de TS’ye taşınır) | Onaylı cap/fiyat placeholder tek dosya | Dosya var |
 
@@ -78,13 +132,13 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-010 | `chore: init git repository` | Boş `Lang/`, `git init`, `README.md` (1 paragraf: LinguaLink ne yapar) | Versiyon kontrolü ve GitHub private repo’nun temeli | `git status` temiz |
-| L-011 | `chore: add gitignore and nvmrc` | `.gitignore`, `.nvmrc` (24.16.0), `.npmrc` (engine-strict) | Node sürüm tutarlılığı; `.env` ve build artifact’ları repoya girmez | Dosyalar var |
-| L-012 | `chore: add root package.json and pnpm workspace` | Root `package.json`, `pnpm-workspace.yaml` (`apps/*`, `packages/*`, `supabase`) | Monorepo ile mobile + contracts + edge functions aynı repoda | `pnpm --version` OK |
-| L-013 | `chore: add tsconfig base` | `tsconfig.base.json` — strict, `noUncheckedIndexedAccess` | TypeScript 6 strict; runtime hatalarını compile-time yakalar | — |
-| L-014 | `chore: add env example template` | `.env.example` — Supabase, `ANTHROPIC_API_KEY` (yorum: yalnızca edge), RevenueCat placeholder | Hangi secret’ın nereye gittiğini öğrenirsin; client’a API key gitmez | `.env` gitignore’da |
-| L-015 | `chore: add hexagonal folder convention doc` | `docs/ARCHITECTURE.md` — bounded context listesi + klasör şablonu | Her feature aynı yapıda; SOLID ihlalini erken görürsün | Dosya okunabilir |
-| L-016 | `chore: add agents and cursor rules skeleton` | `AGENTS.md`, `.cursor/rules/hexagonal.mdc`, `.cursor/rules/solid.mdc` | AI-assisted yazımda katman sınırları korunur | Dosyalar var |
+| ✅ L-010 | `chore: init git repository` | Boş `Lang/`, `git init`, `README.md` (1 paragraf: LinguaLink ne yapar) | Versiyon kontrolü ve GitHub private repo’nun temeli | `git status` temiz |
+| ✅ L-011 | `chore: add gitignore and nvmrc` | `.gitignore`, `.nvmrc` (24.16.0), `.npmrc` (engine-strict) | Node sürüm tutarlılığı; `.env` ve build artifact’ları repoya girmez | Dosyalar var |
+| ✅ L-012 | `chore: add root package.json and pnpm workspace` | Root `package.json`, `pnpm-workspace.yaml` (`apps/*`, `packages/*`, `supabase`) | Monorepo ile mobile + contracts + edge functions aynı repoda | `pnpm --version` OK |
+| ✅ L-013 | `chore: add tsconfig base` | `tsconfig.base.json` — strict, `noUncheckedIndexedAccess` | TypeScript 6 strict; runtime hatalarını compile-time yakalar | — |
+| ✅ L-014 | `chore: add env example template` | `.env.example` — Supabase, `ANTHROPIC_API_KEY` (yorum: yalnızca edge), RevenueCat placeholder | Hangi secret’ın nereye gittiğini öğrenirsin; client’a API key gitmez | `.env` gitignore’da |
+| ✅ L-015 | `chore: add hexagonal folder convention doc` | `docs/ARCHITECTURE.md` — bounded context listesi + klasör şablonu | Her feature aynı yapıda; SOLID ihlalini erken görürsün | Dosya okunabilir |
+| ✅ L-016 | `chore: add agents and cursor rules skeleton` | `AGENTS.md`, `.cursor/rules/hexagonal.mdc`, `.cursor/rules/solid.mdc` | AI-assisted yazımda katman sınırları korunur | Dosyalar var |
 
 
 ---
@@ -94,14 +148,14 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-020 | `feat(contracts): scaffold package` | `packages/contracts/package.json`, `tsconfig.json`, `src/index.ts` | Mobil ve Edge Function aynı Zod şemalarını paylaşır — tip uyumsuzluğu önlenir | `pnpm --filter @lingualink/contracts typecheck` |
-| L-021 | `feat(contracts): add LanguageCode enum` | 12 dil: en, tr, es, de, fr, it, pt, ja, ko, ar, zh, ru | Hedef ve ana dil aynı listeden seçilir (ürün kuralı) | typecheck |
-| L-022 | `feat(contracts): add AlignmentPair schema` | `order`, `source`, `target` — AI çıktısı; renk yok | Flat pair list; AlignmentTree kaldırıldı | typecheck |
-| L-023 | `feat(contracts): add AlignmentPairList schema` | `pairs: AlignmentPair[]` + `HIGHLIGHT_PALETTE` sabiti | Edge → mobil parse; renk uygulama atar | typecheck |
-| L-024 | `feat(contracts): add Lesson and MappedPair schemas` | `Lesson`, `TextSpan`, `MappedPair` (start/end/color) | SQLite + span mapping sonucu | typecheck |
-| L-025 | `feat(contracts): add TestQuestion schema` | `type: word \| sentence \| paragraph`, `prompt`, `choices`, `correctIndex` | Test modları contract-first tanımlanır | typecheck |
-| L-026 | `feat(contracts): add EntitlementTier schema` | `free \| pro \| lifetime` | Free/Pro storage ve feature gate tek tip | typecheck |
-| L-027 | `feat(contracts): export public API` | `src/index.ts` re-export | Diğer paketler tek import path | import edilebilir |
+| ✅ L-020 | `feat(contracts): scaffold package` | `packages/contracts/package.json`, `tsconfig.json`, `src/index.ts` | Mobil ve Edge Function aynı Zod şemalarını paylaşır — tip uyumsuzluğu önlenir | `pnpm --filter @lingualink/contracts typecheck` |
+| ✅ L-021 | `feat(contracts): add LanguageCode enum` | 12 dil: en, tr, es, de, fr, it, pt, ja, ko, ar, zh, ru | Hedef ve ana dil aynı listeden seçilir (ürün kuralı) | typecheck |
+| ✅ L-022 | `feat(contracts): add AlignmentPair schema` | `order`, `source`, `target` — AI çıktısı; renk yok | Flat pair list; AlignmentTree kaldırıldı | typecheck |
+| ✅ L-023 | `feat(contracts): add AlignmentPairList schema` | `pairs: AlignmentPair[]` + `HIGHLIGHT_PALETTE` sabiti | Edge → mobil parse; renk uygulama atar | typecheck |
+| ✅ L-024 | `feat(contracts): add Lesson and MappedPair schemas` | `Lesson`, `TextSpan`, `MappedPair` (start/end/color) | SQLite + span mapping sonucu | typecheck |
+| ✅ L-025 | `feat(contracts): add TestQuestion schema` | `type: word \| sentence \| paragraph`, `prompt`, `choices`, `correctIndex` | Test modları contract-first tanımlanır | typecheck |
+| ✅ L-026 | `feat(contracts): add EntitlementTier schema` | `free \| pro \| lifetime` | Free/Pro storage ve feature gate tek tip | typecheck |
+| ✅ L-027 | `feat(contracts): export public API` | `src/index.ts` re-export | Diğer paketler tek import path | import edilebilir |
 
 
 ---
@@ -111,14 +165,14 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-028 | `docs: document windows android dev setup` | `docs/DEV_SETUP_WINDOWS.md` — Android Studio, SDK 36, AVD, `ANDROID_HOME`, `JAVA_HOME`; repo `C:\dev\lang` gibi kısa, ASCII bir yolda | Windows 11’de tekrarlanabilir kurulum; `Arşiv` gibi ASCII olmayan ve uzun yollar native build'i bozabilir | `adb devices` emülatör görünür |
-| L-029 | `chore: verify android emulator smoke` | Boş Expo yokken: `adb shell getprop ro.build.version.release` | Emülatör çalışıyor mu commit zincirine girmeden önce doğrulanır | API 36 cevap |
-| L-030 | `feat(mobile): scaffold expo sdk 58 app` | `npx create-expo-app@latest --template default@sdk-58` → `apps/mobile`, TypeScript | Çalışan en ince mobil iskelet; tracer bullet emülatörde doğrulanır | `npx expo start` → `a` ile Android |
-| L-031 | `feat(mobile): add expo router entry` | `app/_layout.tsx`, `app/index.tsx` — “LinguaLink” başlık | File-based routing tüm ekranların omurgası | **Android emülatörde** açılır |
-| L-032 | `feat(mobile): add workspace dependency to contracts` | `apps/mobile` → `@lingualink/contracts` workspace link | Monorepo tip paylaşımı mobilde çalışıyor mu erken test | typecheck mobile |
+| 🟡 L-028 | `docs: document windows android dev setup` | `docs/DEV_SETUP_WINDOWS.md` — Android Studio, SDK 36, AVD, `ANDROID_HOME`, `JAVA_HOME`; repo `C:\dev\lang` gibi kısa, ASCII bir yolda | Windows 11’de tekrarlanabilir kurulum; `Arşiv` gibi ASCII olmayan ve uzun yollar native build'i bozabilir | `adb devices` emülatör görünür |
+| ✅ L-029 | `chore: verify android emulator smoke` | Boş Expo yokken: `adb shell getprop ro.build.version.release` | Emülatör çalışıyor mu commit zincirine girmeden önce doğrulanır | API 36 cevap |
+| ✅ L-030 | `feat(mobile): scaffold expo sdk 58 app` | `npx create-expo-app@latest --template default@sdk-58` → `apps/mobile`, TypeScript | Çalışan en ince mobil iskelet; tracer bullet emülatörde doğrulanır | `npx expo start` → `a` ile Android |
+| ✅ L-031 | `feat(mobile): add expo router entry` | `app/_layout.tsx`, `app/index.tsx` — “LinguaLink” başlık | File-based routing tüm ekranların omurgası | **Android emülatörde** açılır |
+| ✅ L-032 | `feat(mobile): add workspace dependency to contracts` | `apps/mobile` → `@lingualink/contracts` workspace link | Monorepo tip paylaşımı mobilde çalışıyor mu erken test | typecheck mobile |
 | L-033 | `chore(mobile): add eas.json development profile` | `eas.json` — development + preview profilleri | RevenueCat ve sqlite native modüller Expo Go’da tam çalışmaz; dev build şart | dosya var |
-| L-034 | `docs: document expo android dev client on windows` | README: `npx expo run:android` (birincil); iOS = EAS cloud only | Windows’ta yerel iOS yok; yanlış beklenti önlenir | README okunabilir |
-| L-035 | `chore(mobile): first android dev build` | `npx expo run:android` — development client emülatöre yüklensin | Sonraki tüm native modül adımları bu build ile test edilir | uygulama emülatörde açılır |
+| 🟡 L-034 | `docs: document expo android dev client on windows` | README: `npx expo run:android` (birincil); iOS = EAS cloud only | Windows’ta yerel iOS yok; yanlış beklenti önlenir | README okunabilir |
+| ✅ L-035 | `chore(mobile): first android dev build` | `npx expo run:android` — development client emülatöre yüklensin | Sonraki tüm native modül adımları bu build ile test edilir | uygulama emülatörde açılır |
 
 
 > **Tracer bullet #0:** Android emülatörde uygulama açılıyor.
@@ -130,15 +184,15 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-040 | `feat(lessons): add domain folder skeleton` | `src/features/lessons/{domain,application,infrastructure,presentation}` | Hexagonal şablon; her yeni feature kopyalanır | klasörler var |
-| L-041 | `test(lessons): add Lesson entity tests` | `Lesson.spec.ts` — boş başlık fail, geçerli lesson pass | Test-first domain; entity kuralları net | test FAIL |
-| L-042 | `feat(lessons): implement Lesson entity` | `domain/entities/Lesson.ts` | İş kuralı UI’dan izole | test PASS |
-| L-043 | `feat(lessons): add LanguageCode value object` | `domain/value-objects/LanguageCode.ts` — contracts’tan validate | Geçersiz dil kodu domain’e sızmaz | test PASS |
-| L-044 | `feat(lessons): define ILessonReader port` | `domain/ports/ILessonReader.ts` | Interface segregation — okuma ayrı port | typecheck |
-| L-045 | `feat(lessons): define ILessonWriter port` | `domain/ports/ILessonWriter.ts` | Yazma ayrı port; Liskov için küçük kontrat | typecheck |
-| L-046 | `test(lessons): add SaveLessonUseCase tests` | mock reader/writer ile spec | Use case davranışı adapter’dan bağımsız test edilir | test FAIL |
-| L-047 | `feat(lessons): implement SaveLessonUseCase` | `application/SaveLessonUseCase.ts` | Tek sorumluluk: ders kaydetme orchestration | test PASS |
-| L-048 | `feat(lessons): add InMemoryLessonRepository` | test adapter — Map tabanlı | SQLite gelmeden use case’leri çalıştırırsın (hızlı tracer) | test PASS |
+| ✅ L-040 | `feat(lessons): add domain folder skeleton` | `src/features/lessons/{domain,application,infrastructure,presentation}` | Hexagonal şablon; her yeni feature kopyalanır | klasörler var |
+| 🟡 L-041 | `test(lessons): add Lesson entity tests` | `Lesson.spec.ts` — boş başlık fail, geçerli lesson pass | Test-first domain; entity kuralları net | test FAIL |
+| 🟡 L-042 | `feat(lessons): implement Lesson entity` | `domain/entities/Lesson.ts` | İş kuralı UI’dan izole | test PASS |
+| 🟡 L-043 | `feat(lessons): add LanguageCode value object` | `domain/value-objects/LanguageCode.ts` — contracts’tan validate | Geçersiz dil kodu domain’e sızmaz | test PASS |
+| 🟡 L-044 | `feat(lessons): define ILessonReader port` | `domain/ports/ILessonReader.ts` | Interface segregation — okuma ayrı port | typecheck |
+| 🟡 L-045 | `feat(lessons): define ILessonWriter port` | `domain/ports/ILessonWriter.ts` | Yazma ayrı port; Liskov için küçük kontrat | typecheck |
+| 🟡 L-046 | `test(lessons): add SaveLessonUseCase tests` | mock reader/writer ile spec | Use case davranışı adapter’dan bağımsız test edilir | test FAIL |
+| 🟡 L-047 | `feat(lessons): implement SaveLessonUseCase` | `application/SaveLessonUseCase.ts` | Tek sorumluluk: ders kaydetme orchestration | test PASS |
+| ✅ L-048 | `feat(lessons): add InMemoryLessonRepository` | test adapter — Map tabanlı | SQLite gelmeden use case’leri çalıştırırsın (hızlı tracer) | test PASS |
 
 
 ---
@@ -148,9 +202,9 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-050 | `feat(languages): add domain LanguageRegistry` | `features/languages/domain/LanguageRegistry.ts` — 12 dil meta (kod, native ad, RTL flag) | Onboarding ve ders oluşturma aynı listeyi kullanır | unit test |
+| 🟡 L-050 | `feat(languages): add domain LanguageRegistry` | `features/languages/domain/LanguageRegistry.ts` — 12 dil meta (kod, native ad, RTL flag) | Onboarding ve ders oluşturma aynı listeyi kullanır | unit test |
 | L-051 | `feat(languages): add GetLanguagesUseCase` | liste döndür | Presentation domain’e doğrudan erişmez | test PASS |
-| L-052 | `feat(languages): add LanguagePicker component` | `presentation/LanguagePicker.tsx` — flat list | Kullanıcı hedef ve ana dili seçebilir | Android emülatörde liste |
+| 🟡 L-052 | `feat(languages): add LanguagePicker component` | `presentation/LanguagePicker.tsx` — flat list | Kullanıcı hedef ve ana dili seçebilir | Android emülatörde liste |
 | L-053 | `feat(languages): persist selected langs in async storage` | `IUserPreferencesPort` + adapter | Seçimler uygulama restart’ta kalır | restart sonrası seçili |
 
 
@@ -161,11 +215,11 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-060 | `feat(mobile): install expo-sqlite and drizzle` | `npx expo install expo-sqlite`, drizzle-orm | Free kullanıcı dersleri yalnızca cihazda — offline-first ürün kuralı | install OK |
-| L-061 | `feat(lessons): add sqlite schema` | `lessons`, `alignment_pairs` — order, phrases, span index, color | Düz pair listesi + map sonucu index’ler | migration çalışır |
-| L-062 | `feat(lessons): add SqliteLessonReader adapter` | `ILessonReader` impl | Free tier’ın birincil depolama adaptörü | read test PASS |
-| L-063 | `feat(lessons): add SqliteLessonWriter adapter` | `ILessonWriter` impl | Kayıt offline; sunucu maliyeti sıfır | write + read roundtrip |
-| L-064 | `feat(lessons): wire SaveLessonUseCase to sqlite` | composition root / DI module | Tracer: emülatörde kalıcı kayıt (dev build gerekir) | ders DB’de |
+| 🟡 L-060 | `feat(mobile): install expo-sqlite and drizzle` | `npx expo install expo-sqlite`, drizzle-orm | Free kullanıcı dersleri yalnızca cihazda — offline-first ürün kuralı | install OK |
+| ✅ L-061 | `feat(lessons): add sqlite schema` | `lessons`, `alignment_pairs` — order, phrases, span index, color | Düz pair listesi + map sonucu index’ler | migration çalışır |
+| ✅ L-062 | `feat(lessons): add SqliteLessonReader adapter` | `ILessonReader` impl | Free tier’ın birincil depolama adaptörü | read test PASS |
+| ✅ L-063 | `feat(lessons): add SqliteLessonWriter adapter` | `ILessonWriter` impl | Kayıt offline; sunucu maliyeti sıfır | write + read roundtrip |
+| ✅ L-064 | `feat(lessons): wire SaveLessonUseCase to sqlite` | composition root / DI module | Tracer: emülatörde kalıcı kayıt (dev build gerekir) | ders DB’de |
 | L-065 | `feat(lessons): add free tier max 2 active lessons rule` | domain `LessonQuotaPolicy` | Free limit ürün kararı; domain’de enforce | 3. ders reddedilir |
 
 
@@ -177,9 +231,9 @@ pnpm --filter @lingualink/mobile android
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
 | L-070 | `feat(lessons): add PrepareTextsUseCase` | ham metin → `LessonDraft` (sourceText, targetText) | “Metinleri Hazırla” butonunun iş kuralı UI’dan ayrılır | unit test |
-| L-071 | `feat(lessons): add CreateLessonScreen shell` | `app/(tabs)/create.tsx` — iki TextInput + buton | Kullanıcı akışının ana giriş ekranı | Android emülatör |
+| ✅ L-071 | `feat(lessons): add CreateLessonScreen shell` | `app/(tabs)/create.tsx` — iki TextInput + buton | Kullanıcı akışının ana giriş ekranı | Android emülatör |
 | L-072 | `feat(lessons): wire prepare button to use case` | state: draft göster | Tracer: yapıştır → hazırla → alt kutuda metin | metin görünür |
-| L-073 | `feat(lessons): add interactive text renderer` | token span listesi (henüz renk yok) | Manuel seçim için tıklanabilir kelime/kelime grupları gerekir | tıklanır span |
+| ✅ L-073 | `feat(lessons): add interactive text renderer` | token span listesi (henüz renk yok) | Manuel seçim için tıklanabilir kelime/kelime grupları gerekir | tıklanır span |
 
 
 ---
@@ -189,12 +243,12 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-080 | `feat(alignment): add ManualMatchUseCase` | seçili source span + target span → segment çifti | AI olmadan eşleştirme mümkün; pedagojik kontrol | unit test |
-| L-081 | `feat(alignment): add segment selection state hook` | `useSegmentSelection.ts` | Presentation’da selection logic izole | iki span seçilir |
-| L-082 | `feat(alignment): add color index per match` | `ColorIndex` value object, döngüsel palet | Görsel 1’deki gibi farklı renkler öğrenmeyi kolaylaştırır | renkler görünür |
-| L-083 | `feat(alignment): add Match button and pair list` | “Seçili İfadeleri Eşleştir” | Kullanıcı adım adım eşleşme oluşturur | çift listelenir |
+| ✅ L-080 | `feat(alignment): add ManualMatchUseCase` | seçili source span + target span → segment çifti | AI olmadan eşleştirme mümkün; pedagojik kontrol | unit test |
+| 🟡 L-081 | `feat(alignment): add segment selection state hook` | `useSegmentSelection.ts` | Presentation’da selection logic izole | iki span seçilir |
+| ✅ L-082 | `feat(alignment): add color index per match` | `ColorIndex` value object, döngüsel palet | Görsel 1’deki gibi farklı renkler öğrenmeyi kolaylaştırır | renkler görünür |
+| 🟡 L-083 | `feat(alignment): add Match button and pair list` | “Seçili İfadeleri Eşleştir” | Kullanıcı adım adım eşleşme oluşturur | çift listelenir |
 | L-084 | `feat(alignment): add clear selection buttons` | İngilizce/Türkçe seçimi temizle | Yanlış seçim düzeltmesi | temizlenir |
-| L-085 | `feat(lessons): save lesson with segments` | SaveLesson + segment persist | Tracer bullet #1: manuel ders kaydı uçtan uca | SQLite’da ders |
+| ✅ L-085 | `feat(lessons): save lesson with segments` | SaveLesson + segment persist | Tracer bullet #1: manuel ders kaydı uçtan uca | SQLite’da ders |
 
 
 > **Tracer bullet #1:** Yapıştır → hazırla → manuel eşleştir → kaydet.
@@ -206,11 +260,11 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-090 | `feat(lessons): add ListLessonsUseCase` | tüm dersleri listele | Lessons ekranı use case üzerinden | test PASS |
-| L-091 | `feat(lessons): add LessonsScreen` | `app/(tabs)/lessons.tsx` — kart listesi, tarih | Kayıtlı derslere tekrar erişim | kayıtlı ders görünür |
-| L-092 | `feat(lessons): add LoadLessonUseCase` | tek ders + alignment_pairs | Düzenleme ve test için yükleme | edit açılır |
-| L-093 | `feat(lessons): add DeleteLessonUseCase` | soft veya hard delete | Kullanıcı ders yönetimi | silince listeden düşer |
-| L-094 | `feat(lessons): add bottom tabs navigator` | create + lessons tab | Ana navigasyon iskeleti | tab geçişi |
+| 🟡 L-090 | `feat(lessons): add ListLessonsUseCase` | tüm dersleri listele | Lessons ekranı use case üzerinden | test PASS |
+| ✅ L-091 | `feat(lessons): add LessonsScreen` | `app/(tabs)/lessons.tsx` — kart listesi, tarih | Kayıtlı derslere tekrar erişim | kayıtlı ders görünür |
+| 🟡 L-092 | `feat(lessons): add LoadLessonUseCase` | tek ders + alignment_pairs | Düzenleme ve test için yükleme | edit açılır |
+| 🟡 L-093 | `feat(lessons): add DeleteLessonUseCase` | soft veya hard delete | Kullanıcı ders yönetimi | silince listeden düşer |
+| ✅ L-094 | `feat(lessons): add bottom tabs navigator` | create + lessons tab | Ana navigasyon iskeleti | tab geçişi |
 
 
 ---
@@ -263,16 +317,16 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-130 | `feat(alignment): define IAlignmentService port` | `align(...): AlignmentPairList` | AI sağlayıcı değişse use case değişmez | typecheck |
-| L-131 | `feat(alignment): add MapPairsToSpansUseCase` | pairs → MappedPair[] + palet + coverage validate | Boyama AI’da değil uygulamada (`SPAN_MAPPING.md`) | unit test PASS |
-| L-132 | `feat(alignment): add HighlightText component` | üst hedef / alt ana dil kutusu, renkli span | Kullanıcı eşleşmeyi görür | Android emülatör |
-| L-133 | `feat(alignment): add tap sync between boxes` | tık → karşı span highlight | Öğrenme: ilişkiyi görmek | iki kutu sync |
-| L-134 | `feat(alignment): add SpeakPairUseCase` | tık → expo-speech hedef dil | Otomatik telaffuz | ses duyulur |
+| ✅ L-130 | `feat(alignment): define IAlignmentService port` | `align(...): AlignmentPairList` | AI sağlayıcı değişse use case değişmez | typecheck |
+| ✅ L-131 | `feat(alignment): add MapPairsToSpansUseCase` | pairs → MappedPair[] + palet + coverage validate | Boyama AI’da değil uygulamada (`SPAN_MAPPING.md`) | unit test PASS |
+| ✅ L-132 | `feat(alignment): add HighlightText component` | üst hedef / alt ana dil kutusu, renkli span | Kullanıcı eşleşmeyi görür | Android emülatör |
+| ✅ L-133 | `feat(alignment): add tap sync between boxes` | tık → karşı span highlight | Öğrenme: ilişkiyi görmek | iki kutu sync |
+| 🟡 L-134 | `feat(alignment): add SpeakPairUseCase` | tık → expo-speech hedef dil | Otomatik telaffuz | ses duyulur |
 | L-135 | `feat(supabase): add align-text edge function skeleton` | CORS + auth + stub pairs JSON | API key sunucuda | functions serve |
 | L-136 | `feat(alignment): add StubAlignmentAdapter` | sabit pairs[] örnek (young boy cümlesi) | Gerçek AI öncesi uçtan uca pipeline | renkli boyama |
-| L-137 | `feat(alignment): add AlignTextUseCase` | port + MapPairsToSpans zinciri | Application orchestration | unit test |
-| L-138 | `feat(alignment): add AI Eşleştir button` | error + ~12 sn beklemeye uygun ilerleme göstergesi | Sihir anı UX; eşleştirme anlık değil | stub çalışır |
-| L-139 | `feat(alignment): add RealignPairUseCase mvp` | basılı tut + sürükle → pair düzelt | Yanlış AI eşleşmesi düzeltmesi | drag çalışır |
+| 🟡 L-137 | `feat(alignment): add AlignTextUseCase` | port + MapPairsToSpans zinciri | Application orchestration | unit test |
+| ✅ L-138 | `feat(alignment): add AI Eşleştir button` | error + ~12 sn beklemeye uygun ilerleme göstergesi | Sihir anı UX; eşleştirme anlık değil | stub çalışır |
+| 🟡 L-139 | `feat(alignment): add RealignPairUseCase mvp` | basılı tut + sürükle → pair düzelt | Yanlış AI eşleşmesi düzeltmesi | drag çalışır |
 
 
 > **Tracer bullet #2:** Stub pairs → MapPairsToSpans → renkli UI + tap/TTS.
@@ -284,15 +338,15 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-140 | `feat(prompts): add prompt template package` | `packages/prompts/` — sabit `ALIGN_SYSTEM_PROMPT` + `buildAlignmentUserMessage()` | Sistem promptu sabit, bağlam kullanıcı mesajında | unit test |
-| L-141 | `feat(prompts): add buildGrammarHints` | `LANGUAGE_PAIR_HINTS.md` → kod | 12 dil çifti desteği | en-tr test |
-| L-142 | `feat(prompts): wire GENERATE_SYSTEM_PROMPT` | sabit `GENERATE_SYSTEM_PROMPT` + `buildGenerateUserMessage()` | Premium ders üretimi | prompt string |
-| L-143 | `feat(alignment): add ClaudeHaikuAdapter` | `claude-haiku-5-5`, `messages.parse` + `zodOutputFormat`, `effort: "low"`; `temperature` yok | Şema uyumlu çıktı + düşük COGS; sağlayıcı port arkasında | invoke OK |
-| L-144 | `feat(alignment): add AlignmentValidator` | `ALIGN_VALIDATION.md` kuralları ve test matrisi | Şema kaplamayı garanti etmez; AI hatası uygulamaya sızmaz | invalid → 422 |
-| L-145 | `feat(alignment): add sentence chunked alignment` | `splitIntoSentences` + cümle başına align + `order` birleştirme | Uzun metinde cümle kaymasını önler | 200 kelime testi geçer |
-| L-146 | `feat(alignment): handle refusal and retry` | `stop_reason` kontrolü, 1 yeniden deneme, manuel moda düşüş | Haiku 5.5'te sunucu tarafı fallback yok | refusal → manuel mod |
-| L-147 | `feat(alignment): wire mobile to real edge function` | stub kaldır | Tracer bullet #3 | Android: ilerleme göstergesi görünür, yanıt ~12 sn içinde gelir |
-| L-148 | `feat(alignment): add manual override after AI` | sürükle + manuel eşleştir | AI düzeltme | edit + re-save |
+| 🟡 L-140 | `feat(prompts): add prompt template package` | `packages/prompts/` — sabit `ALIGN_SYSTEM_PROMPT` + `buildAlignmentUserMessage()` | Sistem promptu sabit, bağlam kullanıcı mesajında | unit test |
+| ✅ L-141 | `feat(prompts): add buildGrammarHints` | `LANGUAGE_PAIR_HINTS.md` → kod | 12 dil çifti desteği | en-tr test |
+| 🟡 L-142 | `feat(prompts): wire GENERATE_SYSTEM_PROMPT` | sabit `GENERATE_SYSTEM_PROMPT` + `buildGenerateUserMessage()` | Premium ders üretimi | prompt string |
+| 🟡 L-143 | `feat(alignment): add ClaudeHaikuAdapter` | `claude-haiku-5-5`, `messages.parse` + `zodOutputFormat`, `effort: "low"`; `temperature` yok | Şema uyumlu çıktı + düşük COGS; sağlayıcı port arkasında | invoke OK |
+| ✅ L-144 | `feat(alignment): add AlignmentValidator` | `ALIGN_VALIDATION.md` kuralları ve test matrisi | Şema kaplamayı garanti etmez; AI hatası uygulamaya sızmaz | invalid → 422 |
+| 🟡 L-145 | `feat(alignment): add sentence chunked alignment` | `splitIntoSentences` + cümle başına align + `order` birleştirme | Uzun metinde cümle kaymasını önler | 200 kelime testi geçer |
+| ✅ L-146 | `feat(alignment): handle refusal and retry` | `stop_reason` kontrolü, 1 yeniden deneme, manuel moda düşüş | Haiku 5.5'te sunucu tarafı fallback yok | refusal → manuel mod |
+| 🟡 L-147 | `feat(alignment): wire mobile to real edge function` | stub kaldır | Tracer bullet #3 | Android: ilerleme göstergesi görünür, yanıt ~12 sn içinde gelir |
+| 🟡 L-148 | `feat(alignment): add manual override after AI` | sürükle + manuel eşleştir | AI düzeltme | edit + re-save |
 
 
 > **Tracer bullet #3:** Gerçek Claude Haiku 5.5 alignment.
@@ -333,14 +387,14 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-170 | `feat(tests): add GenerateQuestionsUseCase` | segmentlerden MCQ üret | Test iş kuralı UI’dan izole | unit test |
-| L-171 | `feat(tests): add word level question generator` | kısa pair (≤3 kelime) | Kelime/kelime grubu soruları | soru üretilir |
-| L-172 | `feat(tests): add sentence level generator` | tam source_text / uzun pair | Cümle tipi sorular | soru üretilir |
-| L-173 | `feat(tests): add paragraph level generator` | birleşik metin bloğu | Paragraf tipi sorular | soru üretilir |
-| L-174 | `feat(tests): add distractor picker` | aynı derslerden 3 yanlış şık | MCQ kalitesi | 4 şık unique |
-| L-175 | `feat(tests): add TestScreen random mode` | `app/(tabs)/test.tsx` | Free yalnızca random (Madde 6) | random başlar |
-| L-176 | `feat(tests): add answer feedback UI` | doğru yeşil / yanlış kırmızı + doğru cevap | Görsel 2 UX | feedback görünür |
-| L-177 | `feat(tests): add test session complete screen` | skor özeti | Tamamlanma hissi + review tetikleyici hazırlığı | skor görünür |
+| ✅ L-170 | `feat(tests): add GenerateQuestionsUseCase` | segmentlerden MCQ üret | Test iş kuralı UI’dan izole | unit test |
+| ✅ L-171 | `feat(tests): add word level question generator` | kısa pair (≤3 kelime) | Kelime/kelime grubu soruları | soru üretilir |
+| 🟡 L-172 | `feat(tests): add sentence level generator` | tam source_text / uzun pair | Cümle tipi sorular | soru üretilir |
+| 🟡 L-173 | `feat(tests): add paragraph level generator` | birleşik metin bloğu | Paragraf tipi sorular | soru üretilir |
+| ✅ L-174 | `feat(tests): add distractor picker` | aynı derslerden 3 yanlış şık | MCQ kalitesi | 4 şık unique |
+| ✅ L-175 | `feat(tests): add TestScreen random mode` | `app/(tabs)/test.tsx` | Free yalnızca random (Madde 6) | random başlar |
+| ✅ L-176 | `feat(tests): add answer feedback UI` | doğru yeşil / yanlış kırmızı + doğru cevap | Görsel 2 UX | feedback görünür |
+| ✅ L-177 | `feat(tests): add test session complete screen` | skor özeti | Tamamlanma hissi + review tetikleyici hazırlığı | skor görünür |
 
 
 ---
@@ -351,8 +405,8 @@ pnpm --filter @lingualink/mobile android
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
 | L-180 | `feat(tests): add StartTestUseCase tier gate` | free → yalnız `random` | Ürün kuralı Madde 6 | free’de select gizli |
-| L-181 | `feat(tests): add lesson multi-select UI` | checkbox ile 1+ ders | Pro kullanıcı hedefli çalışır | pro’da seçim |
-| L-182 | `feat(tests): add mixed question type session` | word+sentence+paragraph karışık | Kapsamlı sınav deneyimi | karışık sorular |
+| 🟡 L-181 | `feat(tests): add lesson multi-select UI` | checkbox ile 1+ ders | Pro kullanıcı hedefli çalışır | pro’da seçim |
+| 🟡 L-182 | `feat(tests): add mixed question type session` | word+sentence+paragraph karışık | Kapsamlı sınav deneyimi | karışık sorular |
 | L-183 | `feat(tests): persist TestResult locally` | skor geçmişi basit sayaç | “Tamamlanan test sayısı” metrik | sayaç artar |
 
 
@@ -366,10 +420,10 @@ pnpm --filter @lingualink/mobile android
 | L-189 | `feat(sharing): add IShareService port` | bundle oluştur, slug al | Paylaşım altyapısı soyut | typecheck |
 | L-190 | `feat(sharing): add ShareDecksUseCase` | 1+ ders → `shared_decks` insert | Viral loop temeli | slug döner |
 | L-191 | `feat(sharing): add tier gate max 3 free max unlimited pro` | Free max 3 ders, Pro 4+ | Madde 8 ürün kuralı | free 4. ders reddedilir |
-| L-192 | `feat(mobile): configure scheme lingualink` | `app.config.ts` scheme + intent filters | `lingualink://deck/xyz` deep link | link açılır |
-| L-193 | `feat(sharing): add ImportDeckUseCase` | deep link → local/cloud import | Alıcı paylaşılan dersi alır | import sonrası listede |
-| L-194 | `feat(sharing): add share sheet button on lessons screen` | native share API | Tek tık paylaşım | share sheet açılır |
-| L-195 | `feat(sharing): add deck shareId route` | `app/deck/[shareId].tsx` | Universal link giriş noktası | cold start import |
+| ✅ L-192 | `feat(mobile): configure scheme lingualink` | `app.config.ts` scheme + intent filters | `lingualink://deck/xyz` deep link | link açılır |
+| 🟡 L-193 | `feat(sharing): add ImportDeckUseCase` | deep link → local/cloud import | Alıcı paylaşılan dersi alır | import sonrası listede |
+| 🟡 L-194 | `feat(sharing): add share sheet button on lessons screen` | native share API | Tek tık paylaşım | share sheet açılır |
+| 🟡 L-195 | `feat(sharing): add deck shareId route` | `app/deck/[shareId].tsx` | Universal link giriş noktası | cold start import |
 
 
 ---
@@ -379,10 +433,10 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-200 | `feat(prompts): add buildLessonGenerationPrompt` | topic + langs + difficulty | Kullanıcı kendi cümlesini bulmak zorunda değil (Madde 11) | prompt test |
-| L-201 | `feat(supabase): add generate-lesson edge function` | yalnızca source_text + target_text; ardından `align-text` | Premium ders üretimi (`GENERATE_SYSTEM_PROMPT.md`); benchmark tek geçişin bozulduğunu gösterdi | invoke OK |
-| L-202 | `feat(lessons): add GenerateLessonUseCase` | Pro gate + quota | Free bu özelliği kullanamaz | free blocked |
-| L-203 | `feat(lessons): add topic input and generate button UI` | create ekranında Pro bölümü | UX: konu gir → ders hazır | pro’da ders oluşur |
+| 🟡 L-200 | `feat(prompts): add buildLessonGenerationPrompt` | topic + langs + difficulty | Kullanıcı kendi cümlesini bulmak zorunda değil (Madde 11) | prompt test |
+| 🟡 L-201 | `feat(supabase): add generate-lesson edge function` | yalnızca source_text + target_text; ardından `align-text` | Premium ders üretimi (`GENERATE_SYSTEM_PROMPT.md`); benchmark tek geçişin bozulduğunu gösterdi | invoke OK |
+| 🟡 L-202 | `feat(lessons): add GenerateLessonUseCase` | Pro gate + quota | Free bu özelliği kullanamaz | free blocked |
+| 🟡 L-203 | `feat(lessons): add topic input and generate button UI` | create ekranında Pro bölümü | UX: konu gir → ders hazır | pro’da ders oluşur |
 
 
 ---
