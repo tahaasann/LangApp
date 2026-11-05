@@ -3,4 +3,10 @@ packages:
   - packages/*
   - supabase
 
+allowBuilds:
+  '@parcel/watcher': false
+
 engineStrict: true
+
+# React Native native derlemesi düz node_modules ile sorunsuz ve Windows yol sınırına takılmaz.
+nodeLinker: hoisted

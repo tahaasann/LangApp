@@ -8,6 +8,9 @@
   },
   "scripts": {
     "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "ai:dev": "node --env-file=.env packages/ai/src/dev-server.ts",
+    "mobile": "pnpm --filter @lingualink/mobile start",
+    "android": "pnpm --filter @lingualink/mobile android"
   }
 }
