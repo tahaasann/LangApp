@@ -33,6 +33,7 @@ export const LessonSchema = z
     sourceText: z.string().min(1),
     targetText: z.string().min(1),
     pairs: z.array(MappedPairSchema),
+    groupId: z.string().min(1).nullable().default(null),
     createdAt: z.iso.datetime(),
     updatedAt: z.iso.datetime(),
   })

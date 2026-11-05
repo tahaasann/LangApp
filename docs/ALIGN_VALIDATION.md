@@ -11,19 +11,19 @@
 source_text + target_text
         │
         ▼
-splitIntoSentences (uygulama kodu)
-        │  ≤ 40 kelime: tek istek · daha uzun: cümle çifti başına istek
-        ▼
-align-text → claude-haiku-5-5
+align-text → claude-haiku-5-5 (tek istek)
         │
         ▼
-AlignmentValidator ── geçersiz → 1 yeniden deneme → 422 + manuel mod
-        │ geçerli
-        ▼
-order birleştirme → MapPairsToSpans → Highlight + TTS
+AlignmentValidator ── geçersiz → hata kodlarıyla 1 yeniden deneme
+        │                                │ yine geçersiz
+        │                                ▼
+        │                        cümle çifti başına istek ── geçersiz → 422 + manuel mod
+        │ geçerli                        │ geçerli
+        ▼                                ▼
+                order birleştirme → MapPairsToSpans → Highlight + TTS
 ```
 
-Cümle sayıları iki metinde eşit değilse parçalama atlanır, metin tek istekte gönderilir.
+Parçalama maliyeti 3–4 katına çıkardığı için yalnızca yedektir (`UNIT_ECONOMICS.md` §4). Cümle sayıları iki metinde eşit değilse parçalama atlanır ve 422 döner.
 
 ## 2. Kurallar
 
@@ -38,7 +38,7 @@ Cümle sayıları iki metinde eşit değilse parçalama atlanır, metin tek iste
 
 Kural 6 için aynı metin birden çok kez geçebilir: her `target`, henüz kullanılmamış bir konuma yerleştirilir. Yerleştirme bulunamazsa sonuç geçersizdir.
 
-Parçalar arasındaki boşluk ve noktalamada `SOURCE_COVERAGE` ve `TARGET_COVERAGE` katıdır; model birebir kaplamayı tutturamıyorsa L-002 ölçümünde gevşetme (yalnızca boşluk farkına izin) ayrıca değerlendirilir.
+**Boşluk toleransı:** Üretimde `allowWhitespaceGaps: true` kullanılır; parçalar arasında yalnızca boşluk atlanabilir. L-002'de (Haiku 5.5, thinking açık) 100 çağrının 81'i birebir kaplamayı, 97'si boşluk toleranslı kaplamayı geçti; boşluk hatası öğrenene zarar vermez. Noktalama atlaması hata sayılır, çünkü noktalama bir renge bağlanmalıdır.
 
 ## 3. Model yanıtı işleme
 
@@ -55,6 +55,7 @@ Kurallar:
 
 - Yanıt içeriği `type` alanına göre okunur; ilk blok `thinking` olabilir.
 - `temperature` gönderilmez: Haiku 5.5 varsayılan dışı örnekleme değerlerini 400 ile reddeder.
+- Thinking kapatılmaz: L-002'de kapalıyken 100 çağrının yalnızca 24'ü doğrulamadan geçti (açıkken 97).
 - Yeniden denemeler de kullanım kotasına değil, COGS telemetrisine yazılır; kota yalnızca başarılı sonuçta artar.
 
 ## 4. Test matrisi (L-144)

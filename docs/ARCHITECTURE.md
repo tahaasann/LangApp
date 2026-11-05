@@ -18,7 +18,7 @@
 ```text
 apps/mobile/          Expo uygulaması
 packages/contracts/   Paylaşılan Zod şemaları (mobil + Edge Functions)
-packages/prompts/     Sistem promptları ve kullanıcı mesajı üreticileri
+packages/ai/          AI işlemleri, promptlar ve yerel geliştirme sunucusu (Edge Functions aynı kodu kullanacak)
 supabase/             Migration'lar ve Edge Functions
 docs/                 Mimari, prompt ve ekonomi kararları
 ```
@@ -63,8 +63,10 @@ kullanıcının yapıştırdığı metin ──┤
 ```
 
 - **Model:** `claude-haiku-5-5`. Model kimliği tek bir sabitte tutulur; çağrılar `IAlignmentService` portunun arkasındadır, sağlayıcı değişimi use case'lere dokunmaz.
-- **Neden Haiku 5.5:** `gpt-6-luna` ile liste fiyatı aynı ($0.10 / $0.50). Zod şeması doğrudan `messages.parse` ile kullanılabildiği için seçildi. Kalite henüz ölçülmedi; L-002 iki modeli aynı metinlerle karşılaştırır ve kararı doğrular veya değiştirir.
-- **Çağrı ayarları:** `output_config.effort: "low"`, structured output, `temperature` yok. Yanıt blokları `type` alanına göre okunur çünkü thinking varsayılan olarak açıktır.
+- **Neden Haiku 5.5:** Kullanıcı kararı. L-002 ölçümü (`UNIT_ECONOMICS.md` §4) yeterli kaliteyi gösterdi; `gpt-6-luna` ile karşılaştırma yapılmadı.
+- **Çağrı ayarları:** `output_config.effort: "low"`, structured output, thinking açık, `temperature` yok. Thinking maliyetin ve gecikmenin çoğunu oluşturur ama kapatıldığında çıktı kalitesi kabul edilemez düzeye iniyor. Yanıt blokları `type` alanına göre okunur.
+- **Gecikme:** Hedef çağrı P95 ≤12 sn. Eşleştirme anlık değildir; uygulama ilerleme gösterir ve sonucu derse kaydeder (`UNIT_ECONOMICS.md` §4).
+- **Geliştirme ortamı:** Supabase bağlanana kadar uygulama yerel `packages/ai` sunucusuna gider. API anahtarı bu sunucuda kalır, uygulama paketine girmez.
 - **Sistem promptu sabittir:** Dil, seviye ve metin yalnızca kullanıcı mesajında gider. Böylece önbellek gerekirse kod değişmeden açılır ve kullanıcı metni talimat olarak yorumlanmaz.
 - **Doğrulama:** Kurallar `ALIGN_VALIDATION.md`, konum ve renk `SPAN_MAPPING.md` içindedir. AI renk veya konum döndürmez.
 
