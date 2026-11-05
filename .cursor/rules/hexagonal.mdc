@@ -1,0 +1,12 @@
+---
+description: Hexagonal katman sınırları
+globs: apps/mobile/src/features/**
+alwaysApply: false
+---
+
+- Bağımlılık yönü: `presentation → application → domain ← infrastructure`.
+- `domain` yalnızca kendi dosyalarını ve `@lingualink/contracts` paketini içe aktarır.
+- `application` portları kullanır; adaptör sınıfı oluşturmaz.
+- SDK istemcileri (`supabase`, `expo-sqlite`, `react-native-purchases`) yalnızca `infrastructure` içinde kullanılır.
+- Adaptörler composition root'ta bağlanır.
+- Yeni özellik `docs/ARCHITECTURE.md` klasör şablonunu izler.

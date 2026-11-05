@@ -1,0 +1,11 @@
+---
+description: SOLID kuralları
+globs: apps/mobile/src/**
+alwaysApply: false
+---
+
+- Use case tek iş yapar ve tek public metot sunar (`execute`).
+- Yeni depolama veya AI sağlayıcısı, mevcut use case'i değiştirmeden yeni adaptörle eklenir.
+- Aynı portun her adaptörü aynı kontrat testlerinden geçer.
+- Portlar küçük tutulur; okuma ve yazma ayrı arayüzlerdir.
+- Use case'ler somut sınıflara değil, port arayüzlerine bağımlıdır.
