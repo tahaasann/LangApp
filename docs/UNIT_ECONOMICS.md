@@ -1,6 +1,6 @@
 # LinguaLink Lite — Unit Ekonomisi
 
-> **Durum:** PROMPT v1 kilitli (L-001b–e). L-002 ölçüm bekliyor (SYSTEM_PROMPT.md ile). L-003–L-005 henüz tamamlanmadı.
+> **Durum:** Prompt v2 Türkçe (L-001b–e). L-002 ölçüm bekliyor (`SYSTEM_PROMPT.md` align-only ile). L-003–L-005 henüz tamamlanmadı.
 > **Son güncelleme:** 2026-06-05
 > **AI model (COGS baz):** `gemini-3.1-flash-lite` — **$0.25/M input**, **$1.50/M output**
 
@@ -52,7 +52,7 @@ COGS_usd = (input_tokens / 1_000_000) × 0.25 + (output_tokens / 1_000_000) × 1
 | İşlem | Endpoint | Prompt dosyası | Kim kullanır |
 |-------|----------|----------------|--------------|
 | **Phrase alignment** | `align-text` | `SYSTEM_PROMPT.md` | Free (limitli), Pro |
-| **AI ders üretimi** | `generate-lesson` | `GENERATE_SYSTEM_PROMPT.md` | Pro / Lifetime |
+| **AI ders üretimi** | `generate-lesson` | `GENERATE_SYSTEM_PROMPT.md` (yalnızca metin; `pairs` yok) | Pro / Lifetime |
 
 ---
 
