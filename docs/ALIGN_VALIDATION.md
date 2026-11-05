@@ -11,19 +11,19 @@
 source_text + target_text
         │
         ▼
-splitIntoSentences (uygulama kodu)
-        │  ≤ 40 kelime: tek istek · daha uzun: cümle çifti başına istek
-        ▼
-align-text → claude-haiku-5-5
+align-text → claude-haiku-5-5 (tek istek)
         │
         ▼
-AlignmentValidator ── geçersiz → 1 yeniden deneme → 422 + manuel mod
-        │ geçerli
-        ▼
-order birleştirme → MapPairsToSpans → Highlight + TTS
+AlignmentValidator ── geçersiz → hata kodlarıyla 1 yeniden deneme
+        │                                │ yine geçersiz
+        │                                ▼
+        │                        cümle çifti başına istek ── geçersiz → 422 + manuel mod
+        │ geçerli                        │ geçerli
+        ▼                                ▼
+                order birleştirme → MapPairsToSpans → Highlight + TTS
 ```
 
-Cümle sayıları iki metinde eşit değilse parçalama atlanır, metin tek istekte gönderilir.
+Parçalama maliyeti 3–4 katına çıkardığı için yalnızca yedektir (`UNIT_ECONOMICS.md` §4). Cümle sayıları iki metinde eşit değilse parçalama atlanır ve 422 döner.
 
 ## 2. Kurallar
 

@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { AI_MODEL } from "@lingualink/ai";
 
 export type JsonSchema = Record<string, unknown>;
 
@@ -31,7 +32,7 @@ export type ThinkingMode = "adaptive" | "disabled";
 
 export function createAnthropicProvider(
   thinking: ThinkingMode,
-  model = "claude-haiku-5-5",
+  model = AI_MODEL,
 ): Provider {
   // Adres açıkça verilir: ortamdaki ANTHROPIC_BASE_URL, anahtarı başka bir sunucuya göndermesin.
   const client = new Anthropic({

@@ -7,6 +7,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@lingualink/ai": "workspace:*",
     "@lingualink/contracts": "workspace:*",
     "@anthropic-ai/sdk": "~1.4.0"
   },
