@@ -1,8 +1,8 @@
 # LinguaLink Lite — Unit Ekonomisi
 
-> **Durum:** PROMPT v1 kilitli (L-001b–e). L-002 ölçüm bekliyor (SYSTEM_PROMPT.md ile). L-003–L-005 henüz tamamlanmadı.
-> **Son güncelleme:** 2026-06-05
-> **AI model (COGS baz):** `gemini-3.1-flash-lite` — **$0.25/M input**, **$1.50/M output**
+> **Durum:** Prompt v3 (L-001b–e). L-002 ölçüm bekliyor (Haiku 5.5, generate ve align ayrı). L-003–L-005 henüz tamamlanmadı.
+> **Son güncelleme:** 2026-11-05
+> **AI model (COGS baz):** `claude-haiku-5-5` — **$0.10/M input**, **$0.50/M output**
 
 ---
 
@@ -20,22 +20,28 @@ Free / Pro / Lifetime katmanlarında:
 
 ---
 
-## 2. Gemini API birim fiyatları (kilitli)
+## 2. Claude API birim fiyatları
 
 | Kalem | USD / 1M token |
 |-------|----------------|
-| Input (text) | **$0.25** |
-| Output | **$1.50** |
+| Input (≤100K token prompt) | **$0.10** |
+| Output (thinking dahil) | **$0.50** |
+| Cache okuma | ~$0.01 |
+| Cache yazma (5 dk) | ~$0.125 |
 
-Kaynak: kullanıcı onayı + [Gemini API pricing](https://ai.google.dev/gemini-api/docs/pricing) (Gemini 3.1 Flash-Lite tier).
+Kaynak: [Claude API pricing](https://platform.claude.com/docs/en/about-claude/pricing). Prompt 100K token'ı aşarsa $0.50 / $2.50 uygulanır; bu üründe beklenmez.
 
-**Formül (tek istek):**
+**Formül (tek istek, önbelleksiz):**
 
 ```text
-COGS_usd = (input_tokens / 1_000_000) × 0.25 + (output_tokens / 1_000_000) × 1.50
+COGS_usd = (input_tokens / 1_000_000) × 0.10 + (output_tokens / 1_000_000) × 0.50
 ```
 
-**Karşılaştırma (eski tahmin modeli):** `gemini-2.5-flash` ($0.30 / $2.50) → 3.1 Flash-Lite **~%17 daha ucuz input, %40 daha ucuz output** — cap'ler yeniden ölçümle güncellenir.
+**Dikkat:** Haiku 5.5'te thinking varsayılan olarak açıktır ve çıktı token'ı olarak faturalanır. `effort: "low"` kullanılır; ölçüm `usage.output_tokens` üzerinden yapılır.
+
+**Önbellek:** Sistem promptu sabit tutulduğu için hazırdır, ama varsayılan olarak kapalıdır. En az 512 token önek gerekir ve 5 dakikalık pencerede en az 2 istek olmadan yazma maliyeti çıkmaz. L-002 ölçümü ve gerçek trafik sonrası değerlendirilir.
+
+**Karşılaştırma:** `gemini-3.1-flash-lite` ($0.25 / $1.50) → Haiku 5.5 **%60 daha ucuz input, ~%67 daha ucuz output**. `gpt-6-luna` liste fiyatı aynıdır ($0.10 / $0.50, cache okuma $0.01). Seçim kalite ölçümüyle doğrulanır (§4.1).
 
 **Sabit maliyetler (kullanıcı başına tahmini — L-004’te netleşir):**
 
@@ -52,37 +58,39 @@ COGS_usd = (input_tokens / 1_000_000) × 0.25 + (output_tokens / 1_000_000) × 1
 | İşlem | Endpoint | Prompt dosyası | Kim kullanır |
 |-------|----------|----------------|--------------|
 | **Phrase alignment** | `align-text` | `SYSTEM_PROMPT.md` | Free (limitli), Pro |
-| **AI ders üretimi** | `generate-lesson` | `GENERATE_SYSTEM_PROMPT.md` | Pro / Lifetime |
+| **AI ders üretimi** | `generate-lesson` | `GENERATE_SYSTEM_PROMPT.md` (yalnızca metin; `pairs` yok) | Pro / Lifetime |
 
 ---
 
 ## 4. Token benchmark tablosu
 
-> **L-002:** `gemini-3.1-flash-lite` + kilitli system prompt ile ölçülecek. Aşağıdaki tahminler **geçersiz** — yalnızca placeholder.
+> **L-002:** `claude-haiku-5-5` + kilitli system prompt ile ölçülecek. Gemini sonuçları (`BENCHMARK_ANALYSIS.md`) bu modele aktarılamaz.
 
-| İşlem | Örnek | Input token | Output token | COGS USD | Kaynak |
-|-------|-------|-------------|--------------|----------|--------|
-| Alignment (kısa) | 1 cümle ~20 kelime | TBD | TBD | TBD | L-002 ölçüm |
-| Alignment (paragraf) | ~80 kelime, beginner fine | TBD | TBD | TBD | L-002 ölçüm |
-| Alignment (uzun) | ~200 kelime | TBD | TBD | TBD | L-002 ölçüm |
-| Lesson generation | konu + tam JSON | TBD | TBD | TBD | L-002 ölçüm |
+| İşlem | Örnek | Input token | Output token | COGS USD | Doğrulama | Kaynak |
+|-------|-------|-------------|--------------|----------|-----------|--------|
+| Alignment (kısa) | 1 cümle ~20 kelime | TBD | TBD | TBD | TBD | L-002 ölçüm |
+| Alignment (paragraf) | ~80 kelime, cümle parçalı | TBD | TBD | TBD | TBD | L-002 ölçüm |
+| Alignment (uzun) | ~200 kelime, cümle parçalı | TBD | TBD | TBD | TBD | L-002 ölçüm |
+| Lesson generation | konu → yalnızca metin | TBD | TBD | TBD | — | L-002 ölçüm |
 
 ### 4.1 L-002 ölçüm prosedürü
 
-1. [Google AI Studio](https://aistudio.google.com/) → model **`gemini-3.1-flash-lite`**
-2. System: `docs/SYSTEM_PROMPT.md` içeriği + örnek injection (en/tr, beginner, fine)
-3. User JSON: `source_text` + `target_text` (paragraf örneği aşağıda)
-4. `usageMetadata` → `promptTokenCount`, `candidatesTokenCount` kaydet
+1. Model **`claude-haiku-5-5`**, `output_config.effort: "low"`, structured output
+2. System: `docs/SYSTEM_PROMPT.md`; generate için `docs/GENERATE_SYSTEM_PROMPT.md`
+3. User JSON: dil, seviye, `grammar_hints`, `source_text`, `target_text` (sabit metinler; örnekler aşağıda)
+4. `usage.input_tokens` ve `usage.output_tokens` kaydet; `stop_reason` ve `AlignmentValidator` sonucunu not et
 5. COGS = formül §2
+6. Her örneği 5 kez çalıştır; maliyetle birlikte doğrulama geçme oranını yaz
+7. Aynı metinleri `gpt-6-luna` ile de çalıştır. Haiku belirgin biçimde geride kalırsa model kararı yeniden açılır
 
 **Örnek paragraf (benchmark #2):**
 
 - Source (EN): `Today is the happiest day of my life because today is so beautiful.`
 - Target (TR): `Bugün hayatımın en mutlu günü çünkü bugün çok güzel.`
 
-**Beginner uzun cümle (benchmark #3 — 22 pair beklenir):**
+**Beginner uzun cümle (benchmark #3):**
 
-- "Although the young boy tried extremely hard..." çifti — `docs/SYSTEM_PROMPT.md` fine granularity testi
+- "Although the young boy tried extremely hard..." çifti — `docs/SYSTEM_PROMPT.md` fine granularity testi; sabit çift sayısı beklenmez, kaplama ve anlam ölçülür
 
 ---
 
@@ -91,7 +99,7 @@ COGS_usd = (input_tokens / 1_000_000) × 0.25 + (output_tokens / 1_000_000) × 1
 | Tier | Alignment | Generation | Not |
 |------|-----------|------------|-----|
 | Free | TBD/gün | 0 | |
-| Pro | TBD/ay | TBD/ay | Flash-Lite ile cap artırılabilir — ölçüm sonrası |
+| Pro | TBD/ay | TBD/ay | Cap ölçüm sonrası belirlenir |
 | Lifetime | TBD/ay | TBD/ay | Aylık cap zorunlu |
 
 ---
@@ -127,3 +135,6 @@ break_even_paying_users = monthly_fixed_costs / gross_margin_usd
 | 2026-06-05 | Alignment: flat `pairs[]` + app-side span mapping | Kullanıcı |
 | 2026-06-05 | Renk: uygulama paleti, AI döndürmez | Kullanıcı |
 | 2026-06-05 | Prompt v1: SYSTEM + GENERATE + SPAN_MAPPING | L-001b–e |
+| 2026-06-05 | Generate ve align ayrı çağrılar; sunucu doğrulaması | Benchmark analizi |
+| 2026-11-05 | AI model: `claude-haiku-5-5` $0.10/$0.50 (`gemini-3.1-flash-lite` yerine); L-002 kalite ölçümüne bağlı | Kullanıcı isteği; seçenekler Haiku 5.5 / GPT-6 Luna |
+| 2026-11-05 | Prompt v3: sabit sistem promptu, bağlam kullanıcı mesajında | Mimari güncelleme |

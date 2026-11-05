@@ -1,4 +1,4 @@
-# LinguaLink — Language Pair Hints (GRAMMAR_NOTES injection)
+# LinguaLink — Dil Çifti İpuçları (DİLBİLGİSİ_NOTLARI enjeksiyonu)
 
 > **Kullanım:** `buildAlignmentPrompt()` / Edge Function her istekte `{{grammar_hints}}` olarak enjekte eder.  
 > **Diller:** 12 kod — hedef ve ana dil aynı listeden (`packages/contracts` L-021).
@@ -24,10 +24,10 @@
 
 ---
 
-## Generic fallback (bilinmeyen çift)
+## Genel yedek (bilinmeyen çift)
 
 ```text
-Align by meaning, not word-for-word order. Respect agglutination, clitics, separable verbs, and article gender. Choose pedagogically useful chunks for {{learner_level}}. Full text coverage on both sides is mandatory.
+Kelime kelime sıra yerine anlama göre eşleştir. Eklemeli diller, klitikler, ayrılabilir fiiller ve artikel cinsiyetine saygı göster. {{learner_level}} seviyesi için pedagojik olarak faydalı parçalar seç. Her iki tarafta tam metin kaplaması zorunludur.
 ```
 
 ---
@@ -37,36 +37,38 @@ Align by meaning, not word-for-word order. Respect agglutination, clitics, separ
 ### en ↔ tr
 
 ```text
-English SVO vs Turkish SOV in subordinate clauses. Possessives: "my life" ↔ "hayatım". Turkish agglutination: one Turkish suffix may map to multiple English words. Question particles and "although/because" often map to clause-final Turkish morphemes — still use exact contiguous substrings from target_text.
+İngilizce SVO, Türkçe yan cümlelerde SOV. İyelik: "my life" ↔ "hayatım". Türkçe eklemeli yapı: tek Türkçe ek birden fazla İngilizce kelimeye karşılık gelebilir. Soru edatları ve "although/because" çoğu zaman cümle sonu Türkçe eklerine denk gelir — yine de target_text'ten birebir ardışık alt dizgi kullan. Pro-drop: Türkçe'de özne çoğu zaman fiil ekindedir (-um, -sun); İngilizce zamir (I, you, we) ayrı çift olmamalı, fiil ifadesiyle birleştir. Örnek: "I would like to order" ↔ "sipariş etmek istiyorum".
 ```
 
 ### de ↔ es
 
 ```text
-German verb-second and separable verb prefixes (trennbare Verben). Spanish SVO. Gendered articles (der/die/das) do not map 1:1 to Spanish articles. Adjective endings in German often bundle meaning spread across Spanish words.
+Almanca fiil ikinci pozisyon ve ayrılabilir fiil önekleri (trennbare Verben). İspanyolca SVO. Almanca artikeller (der/die/das) İspanyolca artikellerle birebir eşleşmez. Almanca sıfat ekleri anlamı İspanyolca birden fazla kelimeye yayabilir.
 ```
 
 ### en ↔ de
 
 ```text
-Shared Germanic roots sometimes false friends. German noun capitalization. Separable verbs split in main clauses. English phrasal verbs may map to single German verbs.
+Ortak Cermen kökleri bazen yanlış arkadaş (false friend). Almanca isim büyük harfi. Ana cümlede ayrılabilir fiiller bölünür. İngilizce phrasal fiiller tek Almanca fiile denk gelebilir.
 ```
 
 ### ja ↔ en
 
 ```text
-Japanese topic-marker は, particles, and SOV order. English subject-prominent. Politeness level must match input register. Kana/kanji boundaries matter for substring integrity.
+Japonca konu işareti は, parçacıklar ve SOV sırası. İngilizce özne merkezli. Nezaket düzeyi girdi kaydına uymalı. Kana/kanji sınırları alt dizgi bütünlüğü için önemli.
 ```
 
 ---
 
-## learner_level → granularity
+## öğrenen_seviyesi → granülarite
 
-| learner_level | granularity | Uzun cümle pair sayısı (tipik) |
-|---------------|-------------|--------------------------------|
-| beginner | fine | 12–25 |
-| intermediate | medium | 6–14 |
-| advanced | coarse | 3–8 |
+| öğrenen_seviyesi | granülarite | Uzun cümle çift sayısı (tipik — üst sınır değil) |
+|------------------|-------------|--------------------------------------------------|
+| beginner | fine | genelde daha fazla küçük parça |
+| intermediate | medium | dengeli parçalar |
+| advanced | coarse | yalnızca kısa tek cümlede büyük bloklar |
+
+Çift sayısı ihtiyaca göre esnektir; tablo yalnızca parça boyutu rehberidir.
 
 Edge Function veya mobil istemci onboarding'den `learner_level` okur ve prompt'a enjekte eder.
 
@@ -85,4 +87,4 @@ export function buildGrammarHints(
 }
 ```
 
-Çift tablosu zamanla genişletilir; MVP'de generic + en-tr + en-de + de-es yeterli.
+Çift tablosu zamanla genişletilir; MVP'de genel yedek + en-tr + en-de + de-es yeterli.
