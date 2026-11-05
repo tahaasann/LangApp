@@ -4,3 +4,4 @@ export * from "./alignment-pair-list.ts";
 export * from "./lesson.ts";
 export * from "./test-question.ts";
 export * from "./entitlement-tier.ts";
+export * from "./validate-alignment.ts";
