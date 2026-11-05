@@ -6,7 +6,7 @@
 >
 > **Nihai hedef:** Plandaki tam ürün — Hexagonal + SOLID mobil uygulama, Free=offline SQLite, Pro=online Supabase, AI phrase-pair eşleştirme + span boyama, flashcard/test/paylaşım, Marketplace, RevenueCat, App Store + Play Store.
 >
-> **Stack (Haziran 2026):** Expo SDK 56 · React Native 0.85 · React 19.2 · TypeScript 6.0.3 · Expo Router 6 · expo-sqlite + drizzle · Supabase · **Gemini 3.1 Flash-Lite** · RevenueCat 10.1.x
+> **Stack (Kasım 2026):** Expo SDK 58 · React Native 0.88 · React 19.3 · TypeScript 6.0 (Expo şablonunun sürümü; TS 7'ye Expo desteklediğinde geçilir) · Expo Router 58 · expo-sqlite + drizzle · Supabase · **Claude Haiku 5.5** (`claude-haiku-5-5`) · RevenueCat 11.x · Zod 4
 >
 > **Geliştirme ortamı:** Windows 11 laptop · **Android Studio Emulator** (birincil test yüzeyi) · iOS yalnızca EAS Build (bulut) ile — yerel Xcode yok
 >
@@ -32,10 +32,10 @@
 | Bileşen | Seçim | Not |
 | --- | --- | --- |
 | OS | Windows 11 | Birincil geliştirme makinesi |
-| Node | 24.16.0 LTS (`.nvmrc`) | `nvm-windows` veya fnm |
-| Paket yöneticisi | pnpm 11.x | Monorepo workspace |
+| Node | 24.16.0 LTS (`.nvmrc`) | `nvm-windows` veya fnm; SDK 58 için ≥24.3 |
+| Paket yöneticisi | pnpm 11.x (`packageManager` ile sabit) | Monorepo workspace |
 | Android IDE | Android Studio (Ladybug+) | SDK Manager + AVD Manager |
-| Emulator | Pixel 6 API 34 (veya 35) x86_64 | ARM emulator Windows’ta yavaş; x86_64 image |
+| Emulator | Pixel 6 API 36 x86_64 | ARM emulator Windows’ta yavaş; x86_64 image |
 | Ortam değişkenleri | `ANDROID_HOME`, `JAVA_HOME` | Studio kurulumundan sonra sistem PATH |
 | Expo çalıştırma | `npx expo run:android` | Native modüller (sqlite, purchases) için dev build |
 | Expo Go | Sınırlı kullanım | RevenueCat / tam sqlite testi için yetersiz |
@@ -45,7 +45,7 @@
 **Tipik günlük döngü (UI adımları):**
 
 ```powershell
-cd c:\Users\tahaa\Desktop\Lang
+cd C:/dev/lang   # Kısa ve ASCII yol; bkz. L-028
 # Emülatör Android Studio'dan önceden açık olsun
 pnpm --filter @lingualink/mobile android
 # veya: cd apps/mobile && npx expo run:android
@@ -58,13 +58,13 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-001 | `docs: add unit economics framework` | `docs/UNIT_ECONOMICS.md` iskelet + Gemini 3.1 Flash-Lite fiyatları | COGS modeli prompt ve fiyattan önce çerçeve | Dosya var |
-| L-001b | `docs: lock align system prompt v1` | `docs/SYSTEM_PROMPT.md` — pairs JSON, learner_level, scope (app boyar) | Token ölçümü ve Edge Function tek kaynak | Dosya kilitli |
-| L-001c | `docs: add generate system prompt v1` | `docs/GENERATE_SYSTEM_PROMPT.md` — cümle+çeviri+pairs | Premium tek tık ders üretimi | Dosya var |
+| L-001 | `docs: add unit economics framework` | `docs/UNIT_ECONOMICS.md` iskelet + Claude Haiku 5.5 fiyatları | COGS modeli prompt ve fiyattan önce çerçeve | Dosya var |
+| L-001b | `docs: lock align system prompt v1` | `docs/SYSTEM_PROMPT.md` v3 — sabit sistem promptu, pairs JSON, scope (app boyar) | Token ölçümü ve Edge Function tek kaynak | Dosya kilitli |
+| L-001c | `docs: add generate system prompt v1` | `docs/GENERATE_SYSTEM_PROMPT.md` v3 — yalnızca metin + çeviri (pairs yok) | Premium ders üretimi; eşleştirme ayrı `align-text` çağrısı | Dosya var |
 | L-001d | `docs: add span mapping architecture` | `docs/SPAN_MAPPING.md` — MapPairsToSpans, palet, tap/TTS/drag | AI renk/konum döndürmez; uygulama sorumluluğu net | Dosya var |
 | L-001e | `docs: add language pair hints` | `docs/LANGUAGE_PAIR_HINTS.md` — 12 dil + grammar_hints injection | Global uygulama; dinamik dil çifti | Dosya var |
-| L-002 | `docs: benchmark ai token usage` | `gemini-3.1-flash-lite` + SYSTEM_PROMPT.md ile 3 örnek ölç | Tahmin değil ölçüm; cap ve fiyat buradan | Tablo dolu, COGS hesaplı |
-| L-003 | `docs: compute pro ai monthly caps` | Free 1/gün, Pro/Lifetime aylık cap — Flash-Lite COGS ile | Sınırsız AI yok; Lifetime aylık cap zorunlu | Cap rakamları yazılı |
+| L-002 | `docs: benchmark ai token usage` | `claude-haiku-5-5` ile generate ve align ayrı ölç; aynı metinleri `gpt-6-luna` ile karşılaştır (`UNIT_ECONOMICS.md` §4.1) | Tahmin değil ölçüm; model kararı, cap ve fiyat buradan | Tablo dolu, COGS + doğrulama oranı yazılı |
+| L-003 | `docs: compute pro ai monthly caps` | Free 1/gün, Pro/Lifetime aylık cap — Haiku 5.5 COGS ile (thinking token'ları dahil) | Sınırsız AI yok; Lifetime aylık cap zorunlu | Cap rakamları yazılı |
 | L-004 | `docs: compute pricing scenarios` | 3 senaryo + break-even; store %30 | Fiyat onaysız configure edilmez | Sen onayladın mı? |
 | L-005 | `docs: lock billing constants` | `docs/BILLING_CONSTANTS.md` (L-020’de TS’ye taşınır) | Onaylı cap/fiyat placeholder tek dosya | Dosya var |
 
@@ -82,7 +82,7 @@ pnpm --filter @lingualink/mobile android
 | L-011 | `chore: add gitignore and nvmrc` | `.gitignore`, `.nvmrc` (24.16.0), `.npmrc` (engine-strict) | Node sürüm tutarlılığı; `.env` ve build artifact’ları repoya girmez | Dosyalar var |
 | L-012 | `chore: add root package.json and pnpm workspace` | Root `package.json`, `pnpm-workspace.yaml` (`apps/*`, `packages/*`, `supabase`) | Monorepo ile mobile + contracts + edge functions aynı repoda | `pnpm --version` OK |
 | L-013 | `chore: add tsconfig base` | `tsconfig.base.json` — strict, `noUncheckedIndexedAccess` | TypeScript 6 strict; runtime hatalarını compile-time yakalar | — |
-| L-014 | `chore: add env example template` | `.env.example` — Supabase, Gemini (yorum: yalnızca edge), RevenueCat placeholder | Hangi secret’ın nereye gittiğini öğrenirsin; client’a API key gitmez | `.env` gitignore’da |
+| L-014 | `chore: add env example template` | `.env.example` — Supabase, `ANTHROPIC_API_KEY` (yorum: yalnızca edge), RevenueCat placeholder | Hangi secret’ın nereye gittiğini öğrenirsin; client’a API key gitmez | `.env` gitignore’da |
 | L-015 | `chore: add hexagonal folder convention doc` | `docs/ARCHITECTURE.md` — bounded context listesi + klasör şablonu | Her feature aynı yapıda; SOLID ihlalini erken görürsün | Dosya okunabilir |
 | L-016 | `chore: add agents and cursor rules skeleton` | `AGENTS.md`, `.cursor/rules/hexagonal.mdc`, `.cursor/rules/solid.mdc` | AI-assisted yazımda katman sınırları korunur | Dosyalar var |
 
@@ -111,9 +111,9 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-028 | `docs: document windows android dev setup` | `docs/DEV_SETUP_WINDOWS.md` — Android Studio, SDK 34, AVD, `ANDROID_HOME`, `JAVA_HOME` | Windows 11’de tekrarlanabilir kurulum; her UI adımında emülatör kullanılacak | `adb devices` emülatör görünür |
-| L-029 | `chore: verify android emulator smoke` | Boş Expo yokken: `adb shell getprop ro.build.version.release` | Emülatör çalışıyor mu commit zincirine girmeden önce doğrulanır | API 34+ cevap |
-| L-030 | `feat(mobile): scaffold expo sdk 56 app` | `npx create-expo-app@latest` → `apps/mobile`, SDK 56, TypeScript | Çalışan en ince mobil iskelet; tracer bullet emülatörde doğrulanır | `npx expo start` → `a` ile Android |
+| L-028 | `docs: document windows android dev setup` | `docs/DEV_SETUP_WINDOWS.md` — Android Studio, SDK 36, AVD, `ANDROID_HOME`, `JAVA_HOME`; repo `C:\dev\lang` gibi kısa, ASCII bir yolda | Windows 11’de tekrarlanabilir kurulum; `Arşiv` gibi ASCII olmayan ve uzun yollar native build'i bozabilir | `adb devices` emülatör görünür |
+| L-029 | `chore: verify android emulator smoke` | Boş Expo yokken: `adb shell getprop ro.build.version.release` | Emülatör çalışıyor mu commit zincirine girmeden önce doğrulanır | API 36 cevap |
+| L-030 | `feat(mobile): scaffold expo sdk 58 app` | `npx create-expo-app@latest --template default@sdk-58` → `apps/mobile`, TypeScript | Çalışan en ince mobil iskelet; tracer bullet emülatörde doğrulanır | `npx expo start` → `a` ile Android |
 | L-031 | `feat(mobile): add expo router entry` | `app/_layout.tsx`, `app/index.tsx` — “LinguaLink” başlık | File-based routing tüm ekranların omurgası | **Android emülatörde** açılır |
 | L-032 | `feat(mobile): add workspace dependency to contracts` | `apps/mobile` → `@lingualink/contracts` workspace link | Monorepo tip paylaşımı mobilde çalışıyor mu erken test | typecheck mobile |
 | L-033 | `chore(mobile): add eas.json development profile` | `eas.json` — development + preview profilleri | RevenueCat ve sqlite native modüller Expo Go’da tam çalışmaz; dev build şart | dosya var |
@@ -222,7 +222,7 @@ pnpm --filter @lingualink/mobile android
 | --- | --- | --- | --- | --- |
 | L-100 | `chore(supabase): init local project` | `supabase init`, `config.toml` | Pro tier cloud storage ve paylaşım için backend | `supabase start` |
 | L-101 | `feat(supabase): add profiles migration` | `profiles` — `tier`, `ui_locale` | Kullanıcı tier bilgisi RLS ile korunur | Studio’da tablo |
-| L-102 | `feat(supabase): add lessons cloud migration` | `lessons`, `alignment_segments` cloud mirror | Pro online depolama şeması | migration apply |
+| L-102 | `feat(supabase): add lessons cloud migration` | `lessons`, `alignment_pairs` cloud mirror | Pro online depolama şeması | migration apply |
 | L-103 | `feat(supabase): enable RLS owner policies` | `auth.uid() = user_id` | Başka kullanıcının dersine erişim engeli | policy test |
 | L-104 | `feat(supabase): add shared_decks migration` | `share_slug`, `payload jsonb` | Deep link paylaşım veri modeli | tablo var |
 | L-105 | `feat(supabase): add ai_usage migration` | günlük/aylık alignment + generation sayacı | Free 1/gün ve Pro cap sunucuda enforce | tablo var |
@@ -238,7 +238,7 @@ pnpm --filter @lingualink/mobile android
 | L-110 | `feat(mobile): add supabase client adapter` | `infrastructure/SupabaseClient.ts` — anon key only | Auth ve Pro sync için client; service key mobilde yok | bağlantı OK |
 | L-111 | `feat(auth): add IAuthService port` | signIn, signUp, signOut, session | Domain auth soyutlaması | typecheck |
 | L-112 | `feat(auth): add AuthScreen` | email + password + Apple (sonra) | Pro tier ve paylaşım için kullanıcı kimliği | giriş yapılır |
-| L-113 | `feat(auth): add session gate in root layout` | oturum yoksa auth veya guest mode | Free offline guest; Pro için hesap gerekir | akış doğru |
+| L-113 | `feat(auth): add session gate in root layout` | oturum yoksa Supabase anonim oturum | Free kullanıcı kayıtsız başlar ama AI kotası için `user_id` gerekir; Pro için hesaba yükseltilir | anonim oturumda kota sayılır |
 
 
 ---
@@ -269,7 +269,7 @@ pnpm --filter @lingualink/mobile android
 | L-133 | `feat(alignment): add tap sync between boxes` | tık → karşı span highlight | Öğrenme: ilişkiyi görmek | iki kutu sync |
 | L-134 | `feat(alignment): add SpeakPairUseCase` | tık → expo-speech hedef dil | Otomatik telaffuz | ses duyulur |
 | L-135 | `feat(supabase): add align-text edge function skeleton` | CORS + auth + stub pairs JSON | API key sunucuda | functions serve |
-| L-136 | `feat(alignment): add StubAlignmentAdapter` | sabit pairs[] örnek (young boy cümlesi) | Gemini öncesi uçtan uca pipeline | renkli boyama |
+| L-136 | `feat(alignment): add StubAlignmentAdapter` | sabit pairs[] örnek (young boy cümlesi) | Gerçek AI öncesi uçtan uca pipeline | renkli boyama |
 | L-137 | `feat(alignment): add AlignTextUseCase` | port + MapPairsToSpans zinciri | Application orchestration | unit test |
 | L-138 | `feat(alignment): add AI Eşleştir button` | loading + error | Sihir anı UX | stub çalışır |
 | L-139 | `feat(alignment): add RealignPairUseCase mvp` | basılı tut + sürükle → pair düzelt | Yanlış AI eşleşmesi düzeltmesi | drag çalışır |
@@ -279,21 +279,23 @@ pnpm --filter @lingualink/mobile android
 
 ---
 
-## Faz 13 — Prompt factory + gerçek Gemini 3.1 Flash-Lite
+## Faz 13 — Prompt factory + gerçek Claude Haiku 5.5
 
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-140 | `feat(prompts): add prompt template package` | `packages/prompts/` — `buildAlignmentPrompt()` SYSTEM_PROMPT.md + injection | Dil çifti + learner_level dinamik | unit test |
+| L-140 | `feat(prompts): add prompt template package` | `packages/prompts/` — sabit `ALIGN_SYSTEM_PROMPT` + `buildAlignmentUserMessage()` | Sistem promptu sabit, bağlam kullanıcı mesajında | unit test |
 | L-141 | `feat(prompts): add buildGrammarHints` | `LANGUAGE_PAIR_HINTS.md` → kod | 12 dil çifti desteği | en-tr test |
-| L-142 | `feat(prompts): wire GENERATE_SYSTEM_PROMPT` | `buildGeneratePrompt()` | Premium ders üretimi | prompt string |
-| L-143 | `feat(alignment): add GeminiFlashLiteAdapter` | `gemini-3.1-flash-lite`, JSON mode | Kilitli model + düşük COGS | invoke OK |
-| L-144 | `feat(alignment): validate AlignmentPairList Zod` | coverage + substring check | AI hatası uygulamaya sızmaz | invalid → 422 |
-| L-145 | `feat(alignment): wire mobile to real edge function` | stub kaldır | Tracer bullet #3 | Android <3sn hedef |
-| L-146 | `feat(alignment): add manual override after AI` | sürükle + manuel eşleştir | AI düzeltme | edit + re-save |
+| L-142 | `feat(prompts): wire GENERATE_SYSTEM_PROMPT` | sabit `GENERATE_SYSTEM_PROMPT` + `buildGenerateUserMessage()` | Premium ders üretimi | prompt string |
+| L-143 | `feat(alignment): add ClaudeHaikuAdapter` | `claude-haiku-5-5`, `messages.parse` + `zodOutputFormat`, `effort: "low"`; `temperature` yok | Şema uyumlu çıktı + düşük COGS; sağlayıcı port arkasında | invoke OK |
+| L-144 | `feat(alignment): add AlignmentValidator` | `ALIGN_VALIDATION.md` kuralları ve test matrisi | Şema kaplamayı garanti etmez; AI hatası uygulamaya sızmaz | invalid → 422 |
+| L-145 | `feat(alignment): add sentence chunked alignment` | `splitIntoSentences` + cümle başına align + `order` birleştirme | Uzun metinde cümle kaymasını önler | 200 kelime testi geçer |
+| L-146 | `feat(alignment): handle refusal and retry` | `stop_reason` kontrolü, 1 yeniden deneme, manuel moda düşüş | Haiku 5.5'te sunucu tarafı fallback yok | refusal → manuel mod |
+| L-147 | `feat(alignment): wire mobile to real edge function` | stub kaldır | Tracer bullet #3 | Android <3sn hedef |
+| L-148 | `feat(alignment): add manual override after AI` | sürükle + manuel eşleştir | AI düzeltme | edit + re-save |
 
 
-> **Tracer bullet #3:** Gerçek Gemini 3.1 Flash-Lite alignment.
+> **Tracer bullet #3:** Gerçek Claude Haiku 5.5 alignment.
 
 ---
 
@@ -378,7 +380,7 @@ pnpm --filter @lingualink/mobile android
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
 | L-200 | `feat(prompts): add buildLessonGenerationPrompt` | topic + langs + difficulty | Kullanıcı kendi cümlesini bulmak zorunda değil (Madde 11) | prompt test |
-| L-201 | `feat(supabase): add generate-lesson edge function` | source_text + target_text + pairs tek tur | Premium tek tık (`GENERATE_SYSTEM_PROMPT.md`) | invoke OK |
+| L-201 | `feat(supabase): add generate-lesson edge function` | yalnızca source_text + target_text; ardından `align-text` | Premium ders üretimi (`GENERATE_SYSTEM_PROMPT.md`); benchmark tek geçişin bozulduğunu gösterdi | invoke OK |
 | L-202 | `feat(lessons): add GenerateLessonUseCase` | Pro gate + quota | Free bu özelliği kullanamaz | free blocked |
 | L-203 | `feat(lessons): add topic input and generate button UI` | create ekranında Pro bölümü | UX: konu gir → ders hazır | pro’da ders oluşur |
 
@@ -403,7 +405,7 @@ pnpm --filter @lingualink/mobile android
 
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
-| L-220 | `feat(mobile): install react-native-purchases` | `npx expo install react-native-purchases react-native-purchases-ui` | IAP Expo SDK 56 resmi yolu; dev build gerekir | dev build OK |
+| L-220 | `feat(mobile): install react-native-purchases` | `npx expo install react-native-purchases react-native-purchases-ui` | IAP Expo SDK 58 resmi yolu; dev build gerekir | dev build OK |
 | L-221 | `feat(billing): add RevenueCatEntitlementAdapter` | `IEntitlementService` impl | Gerçek tier RevenueCat’ten gelir | sandbox tier |
 | L-222 | `feat(billing): configure products from UNIT_ECONOMICS` | monthly, yearly, lifetime product ids | Onaylı fiyatlar dışında configure yok (L-004 kapısı) | products match doc |
 | L-223 | `feat(billing): add PaywallScreen` | onboarding sonunda RevenueCat UI | Anında paywall lansman geliri | paywall görünür |
@@ -457,7 +459,7 @@ pnpm --filter @lingualink/mobile android
 | ID | Commit | Ne yaparsın | Neden yaparsın | Doğrula |
 | --- | --- | --- | --- | --- |
 | L-260 | `chore(eas): add production build profile` | Android + iOS (iOS = EAS cloud, Windows’ta yerel build yok) | Store’a giden binary | `eas build -p android` OK |
-| L-261 | `docs: add privacy policy and terms urls` | AI/Gemini, veri saklama, KVKK | Store zorunlu metadata | URL’ler canlı |
+| L-261 | `docs: add privacy policy and terms urls` | AI/Anthropic, veri saklama, KVKK; metin AI'a gönderilmeden önce uygulama içi açık onay | Store zorunlu metadata | URL’ler canlı |
 | L-262 | `chore(store): play console listing tr en es` | screenshot (emülatörden), açıklama, ASO | Windows geliştirmede **Android önce** lansman | listing draft |
 | L-263 | `chore(store): play internal testing submit` | Android beta | Geliştirme boyunca kullandığın yüzeyde son doğrulama | internal OK |
 | L-264 | `chore(eas): ios build via eas cloud` | `eas build -p ios` — Mac gerekmez | Windows’tan iOS binary yalnızca EAS ile | .ipa artifact |
@@ -502,7 +504,7 @@ pnpm --filter @lingualink/mobile android
 | **M7** Auth + cloud şema | L-113 | Supabase + giriş |
 | **M8** Pro storage | L-125 | Tier’a göre sqlite/cloud |
 | **M9** Stub AI UI | L-139 | pairs → span boyama + tap/TTS |
-| **M10** Gerçek Gemini | L-146 | Gemini 3.1 Flash-Lite canlı |
+| **M10** Gerçek AI | L-148 | Claude Haiku 5.5 canlı |
 | **M11** Flashcards | L-166 | Ayrı tab + TTS Pro |
 | **M12** Test Free | L-177 | Random quiz 3 soru tipi |
 | **M13** Test Pro | L-183 | Ders seçerek test |
@@ -594,4 +596,4 @@ Bu mesajda L-001 → L-004. Bitirince commit/push; sonra "L-005'e geçelim" yaz.
 
 ---
 
-*Son güncelleme: 2026-06-05 — Gemini 3.1 Flash-Lite · flat pairs + span mapping · Windows Android Emulator · Batch protokol v2*
+*Son güncelleme: 2026-11-05 — Claude Haiku 5.5 · Expo SDK 58 · generate/align ayrımı + AlignmentValidator · flat pairs + span mapping · Windows Android Emulator · Batch protokol v2*

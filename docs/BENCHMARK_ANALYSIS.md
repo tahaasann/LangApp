@@ -7,6 +7,8 @@
 > **Kalite analizi (ikinci görüş):** Gemini 3.5 Flash  
 > **Yazar:** Cursor agent — LinguaLink mimari değerlendirmesi
 
+> **Tarihsel kayıt (2026-11-05):** Üretim modeli `claude-haiku-5-5` oldu. Bu dosyadaki token, COGS ve kalite sonuçları Gemini içindir, Haiku'ya aktarılamaz. Pipeline sonuçları (generate ≠ align, cümle parçalama, sunucu doğrulaması) geçerlidir ve `ALIGN_VALIDATION.md`'ye taşındı. "temperature 0 ile yeniden deneme" önerisi geçersizdir; Haiku 5.5 bu parametreyi reddeder.
+
 ---
 
 ## 0. Yönetici özeti

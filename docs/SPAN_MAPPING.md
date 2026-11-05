@@ -21,7 +21,8 @@ Renkli, tıklanabilir UI
 | Katman | Sorumlu |
 |--------|---------|
 | Metin gösterimi | CreateLessonScreen (üst/alt kutular) |
-| AI eşleştirme | Gemini + `SYSTEM_PROMPT.md` |
+| AI eşleştirme | Claude Haiku 5.5 + `SYSTEM_PROMPT.md` |
+| Doğrulama | `AlignmentValidator` (`ALIGN_VALIDATION.md`) |
 | Konum + renk | `MapPairsToSpansUseCase` |
 | Etkileşim | `HighlightText`, `SpeakPairUseCase`, `RealignPairUseCase` |
 
@@ -84,8 +85,8 @@ type MappedPair = {
 
 **Target tarafı:**
 
-1. Her pair için `targetText.indexOf(pair.target)` — ilk eşleşme veya kısıtlı arama.
-2. Çakışma kontrolü: target span'ları pozisyona göre sıralandığında overlap olmamalı.
+1. Her pair için `pair.target`'ın `targetText` içindeki, kullanılmamış aralıklarla çakışmayan ilk konumunu seç. Tekrarlı ifadeler ("bugün ... bugün") bu sayede ayrı konumlara yerleşir.
+2. Çakışmasız konum yoksa → `SpanMappingError`.
 3. Tam kaplama: tüm `sourceText` ve `targetText` karakterleri bir span'a bağlı mı? (`validateFullCoverage`)
 
 ### Domain port
@@ -159,4 +160,4 @@ Span index'leri kayıt anında `MapPairsToSpans` sonucundan yazılır — tekrar
 |------|-----|
 | `SpanNotFoundError` | "Eşleştirme konumu bulunamadı — manuel düzeltin" |
 | Coverage fail | AI'yı tekrar dene veya manuel mod |
-| Duplicate substring | `searchFrom` cursor ile çözülür; target'ta context penceresi |
+| Duplicate substring | Source'ta `searchFrom` cursor, target'ta kullanılmamış konum seçimi |

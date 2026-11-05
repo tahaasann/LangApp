@@ -37,7 +37,7 @@ Kelime kelime sıra yerine anlama göre eşleştir. Eklemeli diller, klitikler, 
 ### en ↔ tr
 
 ```text
-İngilizce SVO, Türkçe yan cümlelerde SOV. İyelik: "my life" ↔ "hayatım". Türkçe eklemeli yapı: tek Türkçe ek birden fazla İngilizce kelimeye karşılık gelebilir. Soru edatları ve "although/because" çoğu zaman cümle sonu Türkçe eklerine denk gelir — yine de target_text'ten birebir ardışık alt dizgi kullan. Pro-drop: İngilizce zamir (I, you, we) ayrı çift olmamalı; fiil ifadesiyle birleştir. "—" veya boş hedef yasak.
+İngilizce SVO, Türkçe yan cümlelerde SOV. İyelik: "my life" ↔ "hayatım". Türkçe eklemeli yapı: tek Türkçe ek birden fazla İngilizce kelimeye karşılık gelebilir. Soru edatları ve "although/because" çoğu zaman cümle sonu Türkçe eklerine denk gelir — yine de target_text'ten birebir ardışık alt dizgi kullan. Pro-drop: Türkçe'de özne çoğu zaman fiil ekindedir (-um, -sun); İngilizce zamir (I, you, we) ayrı çift olmamalı, fiil ifadesiyle birleştir. Örnek: "I would like to order" ↔ "sipariş etmek istiyorum".
 ```
 
 ### de ↔ es
