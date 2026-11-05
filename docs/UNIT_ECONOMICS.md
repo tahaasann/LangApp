@@ -106,13 +106,37 @@ COGS_usd = (input_tokens / 1_000_000) × 0.10 + (output_tokens / 1_000_000) × 0
 
 ---
 
-## 5. Tier AI limitleri (L-003 doldurur)
+## 5. Tier AI limitleri (L-003)
 
-| Tier | Alignment | Generation | Not |
-|------|-----------|------------|-----|
-| Free | TBD/gün | 0 | |
-| Pro | TBD/ay | TBD/ay | Cap ölçüm sonrası belirlenir |
-| Lifetime | TBD/ay | TBD/ay | Aylık cap zorunlu |
+> **Durum:** Taslak. Fiyat senaryosuyla birlikte onaylanınca L-005'te kilitlenir.
+
+**Planlama birim maliyetleri (§4'ten):**
+
+| Kalem | USD | Dayanak |
+|-------|-----|---------|
+| Eşleştirme, planlama | $0.0025 | ~130 kelimelik tek istek ($0.0022) + yeniden deneme payı |
+| Eşleştirme, en kötü durum | $0.016 | 200 kelime: tek istek başarısız, ardından cümle parçalı. Ölçülmedi, §4'ten orantılandı |
+| Ders üretimi (yalnızca metin) | $0.00025 | Ölçüm |
+
+**Önerilen limitler:**
+
+| Tier | Eşleştirme | Üretim | Limitte AI maliyeti/ay | En kötü durum/ay |
+|------|------------|--------|------------------------|------------------|
+| Free | 1/gün | 0 | $0.08 | $0.48 |
+| Pro | 200/ay | 50/ay | $0.51 | $3.21 |
+| Lifetime | 100/ay | 20/ay | $0.26 | $1.61 |
+
+**Sayım kuralları:**
+
+- Üretilen ders eşleştirileceği için iki sayaçtan da birer düşer.
+- Otomatik yeniden deneme ve parçalı yedek istek kotadan düşmez (`ALIGN_VALIDATION.md` §3). Kullanıcının aynı metni yeniden eşleştirmesi düşer.
+- Metin uzunluğu sunucuda sınırlanır: istek başına en fazla **1.500 karakter** `source_text` (İngilizcede ~200 kelime). Sınır yoksa maliyetin üst sınırı da olmaz. Japonca gibi dillerde karakter başına token daha yüksek olduğundan sınır L-145'te ölçülerek doğrulanır.
+- Gerekçe: 200/ay günde ~6 ders eder; günlük çalışan kullanıcı için yeterli varsayılır, gerçek kullanım L-153 ile izlenir.
+
+**Riskler:**
+
+- **Free maliyeti ödeyen kullanıcıya biner:** En büyük belirsizlik budur (§7'deki duyarlılık tablosu).
+- **Anonim oturum kötüye kullanımı:** Uygulamayı yeniden kurmak yeni anonim kimlik, dolayısıyla yeni Free kotası verebilir. Faz 14'te IP hız sınırı ve cihaz doğrulaması (App Attest / Play Integrity) değerlendirilir.
 
 ---
 
