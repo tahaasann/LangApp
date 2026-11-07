@@ -1,0 +1,6 @@
+/* VS Code / Cursor Markdown önizlemesi: işaretli görev soluk ve renksiz görünür (ATOMIC-TODO.md). */
+li:has(> input[type="checkbox"]:checked),
+li:has(> p:first-child > input[type="checkbox"]:checked) {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
